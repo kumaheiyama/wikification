@@ -37,6 +37,15 @@ namespace Wikification.Business.Implementation
 
         public ICollection<ContentPageDto> GetAllContentPages()
         {
+            return new List<ContentPageDto>
+            {
+                new ContentPageDto
+                {
+                    Title = "title1",
+                    Version = "0.1.0"
+                }
+            };
+
             var contentPages = _context.ContentPages
                 .Select(x => new ContentPageDto
                 {
