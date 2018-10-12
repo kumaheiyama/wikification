@@ -1,0 +1,33 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Wikification.Data.Datastructure
+{
+    public partial class Edition
+    {
+        [Owned]
+        public class EditionVersion
+        {
+            public EditionVersion()
+            {
+                Major = 1;
+                Minor = 0;
+                Change = 0;
+            }
+            public EditionVersion(int major, int minor, int change) : this()
+            {
+                Major = major;
+                Minor = minor;
+                Change = change;
+            }
+            public int Major { get; private set; }
+            public int Minor { get; private set; }
+            public int Change { get; private set; }
+
+            public override string ToString()
+            {
+                return this.Major + "." + this.Minor + "." + this.Change;
+            }
+        }
+    }
+
+}
