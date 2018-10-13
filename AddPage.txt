@@ -1,0 +1,8 @@
+title Add new content page
+
+ExternalSystem->Wikifi: Add new Page
+Wikifi->Wikifi: Add Page
+Wikifi->Wikifi: Add Page.Edition
+Wikifi->Wikifi: Add Categories
+Wikifi->ExternalSystem: Notify listeners of new Page
+

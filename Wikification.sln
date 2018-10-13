@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wikification", "Wikificatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sequence diagrammes", "Sequence diagrammes", "{329CC4EC-C6BD-4E7D-AD67-16F48E7F98BC}"
 	ProjectSection(SolutionItems) = preProject
+		AddExternalSystem.txt = AddExternalSystem.txt
+		AddPage.txt = AddPage.txt
+		AddRemoveUser.txt = AddRemoveUser.txt
 		ReadPage.txt = ReadPage.txt
+		UpdatePage.txt = UpdatePage.txt
 	EndProjectSection
 EndProject
 Global

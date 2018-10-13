@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Wikification.Business
+namespace Wikification.Business.Dto.Model
 {
     public class UserDto
     {

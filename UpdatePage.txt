@@ -1,0 +1,8 @@
+title Update content page
+
+ExternalSystem->Wikifi: Update Page
+Wikifi->Wikifi: Add Page.Edition
+Wikifi->Wikifi: Update Page title
+Wikifi->Wikifi: Add/Remove Categories
+Wikifi->Wikifi: Add/Remove Badges
+Wikifi->ExternalSystem: Notify listeners of new Page.Edition

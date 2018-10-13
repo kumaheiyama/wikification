@@ -15,6 +15,9 @@ namespace Wikification.Data
         {
             builder.HasDefaultSchema("wikifi");
             builder.ApplyAllConfigurationsFromAssembly(GetType().Assembly);
+
+            MainContextSeeder.Seed(builder);
+
             base.OnModelCreating(builder);
         }
 
@@ -22,5 +25,6 @@ namespace Wikification.Data
         public DbSet<Level> Levels { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Badge> Badges { get; set; }
+        public DbSet<ExternalSystem> Systems { get; set; }
     }
 }

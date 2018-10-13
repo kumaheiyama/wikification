@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Wikification.Business;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Interfaces;
 
 namespace Wikification.Controllers

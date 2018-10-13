@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Wikification.Data.Extensions
+﻿namespace Wikification.Data.Extensions
 {
     internal class ContentParseBuilder
     {

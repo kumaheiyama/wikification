@@ -1,0 +1,12 @@
+title Add/Remove User
+
+ExternalSystem->Wikifi: Add User
+Wikifi->Wikifi: Add User
+Wikifi->Wikifi: Set User external id
+Wikifi->Wikifi: Set User Level
+Wikifi->ExternalSystem: Notify listeners of new User
+ExternalSystem->Wikifi: Remove User
+Wikifi->Wikifi: Remove User earned Badges
+Wikifi->Wikifi: Remove User earned read Page.Editions
+Wikifi->Wikifi: Remove User
+Wikifi->ExternalSystem: Notify listeners of User removed

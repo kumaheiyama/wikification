@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Wikification.Data.Datastructure.Linking;
 using Wikification.Data.Extensions;
 using Wikification.Data.Interfaces;
 
@@ -19,9 +21,12 @@ namespace Wikification.Data.Datastructure
         //Properties
         public int AwardedXp { get; set; }
         public string Contents { get; set; }
-        public long DateCreated { get; set; }
+        public long DateCreated { get; private set; }
         public string EditionDescription { get; set; }
         public int Id { get; set; }
+        public ContentPage Page { get; set; }
+        public int PageId { get; set; }
+        public ICollection<UserEdition> Users { get; set; }
         public EditionVersion Version { get; private set; }
 
         //Methods

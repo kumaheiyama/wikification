@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
 using Wikification.Data;
@@ -37,41 +38,38 @@ namespace Wikification.Business.Implementation
 
         public ICollection<ContentPageDto> GetAllContentPages()
         {
-            return new List<ContentPageDto>
-            {
-                new ContentPageDto
-                {
-                    Title = "title1",
-                    Version = "0.1.0"
-                }
-            };
-
             var contentPages = _context.ContentPages
+                .Include(x => x.Badge)
+                .Include(x => x.Editions)
+                .Include(x => x.Categories)
+                .ThenInclude(cat => cat.Category)
+                .ThenInclude(cat => cat.Badge)
                 .Select(x => new ContentPageDto
                 {
-                    Badges = x.Badges
-                        .Select(y => new BadgeDto
-                        {
-                            AwardedXp = y.CalculatedAwardedXp(),
-                            Description = y.Description,
-                            Name = y.Name,
-                            SymbolUrl = y.SymbolUrl
-                        })
-                        .ToList(),
+                    //TODO Funkar inte av någon anledning...
+                    //Badge = x.Badge != null
+                    //    ? new BadgeDto
+                    //    {
+                    //        AwardedXp = x.Badge.CalculatedAwardedXp(),
+                    //        Description = x.Badge.Description,
+                    //        Name = x.Badge.Name,
+                    //        SymbolUrl = x.Badge.SymbolUrl
+                    //    }
+                    //    : null,
                     Categories = x.Categories
                         .Select(y => new CategoryDto
                         {
-                            AwardedXp = y.CalculatedAwardedXp(),
-                            Badge = y.Badge != null ?
+                            AwardedXp = y.Category.CalculatedAwardedXp(),
+                            Badge = y.Category.Badge != null ?
                                 new BadgeDto
                                 {
-                                    AwardedXp = y.Badge.CalculatedAwardedXp(),
-                                    Description = y.Badge.Description,
-                                    Name = y.Badge.Name,
-                                    SymbolUrl = y.Badge.SymbolUrl
+                                    AwardedXp = y.Category.Badge.CalculatedAwardedXp(),
+                                    Description = y.Category.Badge.Description,
+                                    Name = y.Category.Badge.Name,
+                                    SymbolUrl = y.Category.Badge.SymbolUrl
                                 }
                                 : null,
-                            Name = y.Name
+                            Name = y.Category.Name
                         })
                         .ToList(),
                     Contents = x.LatestEdition().Contents,
@@ -98,9 +96,9 @@ namespace Wikification.Business.Implementation
             var category = new Category
             {
                 AwardedXp = request.AwardedXp,
-                Badge = badge,
-                Name = request.CategoryName
+                Name = request.Name
             };
+            category.SetBadge(badge);
 
             _context.Categories.Add(category);
             _context.SaveChanges();
@@ -108,17 +106,18 @@ namespace Wikification.Business.Implementation
         public void RemoveCategory(RemoveCategoryRequestDto request)
         {
             //TODO constraints på tabell
-            var contentPage = _context.ContentPages
-                .Include(x => x.Categories)
-                .SingleOrDefault(x => x.Id == request.ContentPageId);
+            //TODO se över logik, måste ta bort från samtliga sidor och sedan från databasen
+            //var contentPage = _context.ContentPages
+            //    .Include(x => x.Categories)
+            //    .SingleOrDefault(x => x.Id == request.ContentPageId);
 
-            var category = contentPage.Categories
-               .FirstOrDefault(x => x.Name == request.CategoryName);
-            if (category != null)
-            {
-                contentPage.Categories.Remove(category);
-            }
-            _context.SaveChanges();
+            //var category = contentPage.Categories
+            //   .FirstOrDefault(x => x.Category.Name == request.CategoryName);
+            //if (category != null)
+            //{
+            //    contentPage.Categories.Remove(category);
+            //}
+            //_context.SaveChanges();
         }
     }
 }
