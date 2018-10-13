@@ -9,13 +9,14 @@ namespace Wikification.Data.Datastructure
     {
         public ContentPage()
         {
-            Editions = new Edition[0];
-            Categories = new Category[0];
-            Badges = new Badge[0];
+            Editions = new List<Edition>();
+            Categories = new List<Category>();
+            Badges = new List<Badge>();
         }
 
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Contents { get { return LatestEdition().ParsedContents(); } }
         public ICollection<Edition> Editions { get; private set; }
         public ICollection<Category> Categories { get; private set; }
         public ICollection<Badge> Badges { get; private set; }

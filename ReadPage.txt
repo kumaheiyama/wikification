@@ -1,0 +1,13 @@
+#https://www.websequencediagrams.com/
+title Read page sequence
+
+ExternalSystem->Wikifi: User read Page.Edition
+Wikifi->User: Award XP
+Wikifi->User: Mark Page.Edition as read for User
+Wikifi->ExternalSystem: Notify User awarded XP
+Wikifi-->Wikifi: Check XP levels
+Wikifi-->User: Award Level
+Wikifi-->ExternalSystem: Notify User awarded Level
+Wikifi-->Wikifi: Check Badge levels
+Wikifi-->User: Award Badge
+Wikifi-->ExternalSystem: Notify User awarded Badge
