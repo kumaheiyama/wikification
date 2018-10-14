@@ -12,11 +12,13 @@ namespace Wikification.Data.Datastructure.Mapping
 
             builder.HasOne(pc => pc.Category)
                 .WithMany(p => p.Pages)
-                .HasForeignKey(pc => pc.PageId);
+                .HasForeignKey(pc => pc.PageId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(pc => pc.Page)
                 .WithMany(c => c.Categories)
-                .HasForeignKey(pc => pc.CategoryId);
+                .HasForeignKey(pc => pc.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

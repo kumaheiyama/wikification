@@ -10,8 +10,8 @@ using Wikification.Data;
 namespace Wikification.Data.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20181014195503_Moved Level, Badge and Category into ExternalSystem")]
-    partial class MovedLevelBadgeandCategoryintoExternalSystem
+    [Migration("20181014201426_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,12 +46,6 @@ namespace Wikification.Data.Migrations
                     b.HasIndex("SystemId");
 
                     b.ToTable("Badges");
-
-                    b.HasData(
-                        new { Id = 1, AwardedXp = 100, Description = "'First page' is awarded when the first page is read. Good work!", Name = "First page", SymbolUrl = "http://image1", SystemId = 0 },
-                        new { Id = 2, AwardedXp = 100, Description = "'Ten pages' is awarded when ten pages have been read. Fantastic!", Name = "Ten pages", SymbolUrl = "http://image2", SystemId = 0 },
-                        new { Id = 3, AwardedXp = 500, Description = "'Hundred pages' is awarded when one hundred pages have been read. Amazing!", Name = "Hundred pages", SymbolUrl = "http://image3", SystemId = 0 }
-                    );
                 });
 
             modelBuilder.Entity("Wikification.Data.Datastructure.Category", b =>
@@ -180,14 +174,6 @@ namespace Wikification.Data.Migrations
                     b.HasIndex("SystemId");
 
                     b.ToTable("Levels");
-
-                    b.HasData(
-                        new { Id = 1, Name = "Egg", SystemId = 0, XpThreshold = 0 },
-                        new { Id = 2, Name = "Larva", SystemId = 0, XpThreshold = 336 },
-                        new { Id = 3, Name = "Pupa", SystemId = 0, XpThreshold = 1129 },
-                        new { Id = 4, Name = "Butterfly", SystemId = 0, XpThreshold = 3793 },
-                        new { Id = 5, Name = "Dragonfly", SystemId = 0, XpThreshold = 12746 }
-                    );
                 });
 
             modelBuilder.Entity("Wikification.Data.Datastructure.Linking.PageCategory", b =>
@@ -257,7 +243,7 @@ namespace Wikification.Data.Migrations
             modelBuilder.Entity("Wikification.Data.Datastructure.Badge", b =>
                 {
                     b.HasOne("Wikification.Data.Datastructure.ExternalSystem", "System")
-                        .WithMany("Badges")
+                        .WithMany()
                         .HasForeignKey("SystemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -269,7 +255,7 @@ namespace Wikification.Data.Migrations
                         .HasForeignKey("BadgeId");
 
                     b.HasOne("Wikification.Data.Datastructure.ExternalSystem", "System")
-                        .WithMany("Categories")
+                        .WithMany()
                         .HasForeignKey("SystemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -325,7 +311,7 @@ namespace Wikification.Data.Migrations
             modelBuilder.Entity("Wikification.Data.Datastructure.Level", b =>
                 {
                     b.HasOne("Wikification.Data.Datastructure.ExternalSystem", "System")
-                        .WithMany("Levels")
+                        .WithMany()
                         .HasForeignKey("SystemId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -335,12 +321,12 @@ namespace Wikification.Data.Migrations
                     b.HasOne("Wikification.Data.Datastructure.ContentPage", "Page")
                         .WithMany("Categories")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Wikification.Data.Datastructure.Category", "Category")
                         .WithMany("Pages")
                         .HasForeignKey("PageId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Wikification.Data.Datastructure.Linking.UserBadge", b =>
@@ -348,12 +334,12 @@ namespace Wikification.Data.Migrations
                     b.HasOne("Wikification.Data.Datastructure.User", "User")
                         .WithMany("EarnedBadges")
                         .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Wikification.Data.Datastructure.Badge", "Badge")
                         .WithMany("Users")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Wikification.Data.Datastructure.Linking.UserEdition", b =>
