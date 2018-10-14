@@ -12,16 +12,16 @@ install:
 
 before_build:
   - cmd: dotnet --version
-  - cmd: dotnet restore ./src/src.csproj --verbosity m
+  - cmd: dotnet restore ./Wikification/Wikification.csproj --verbosity m
 
 build_script:
-  - cmd: dotnet publish .src/src.csproj
+  - cmd: dotnet publish ./Wikification/Wikification.csproj
 
 after_build:
   #performed after build
 
 artifacts:
-  - path: '\src\bin\Release\netcoreapp2.1'
+  - path: '\Wikification\bin\Release\netcoreapp2.1'
     name: WebSite
     type: WebDeployPackage
 
