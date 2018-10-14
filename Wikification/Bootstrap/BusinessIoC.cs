@@ -10,6 +10,7 @@ namespace Wikification.Bootstrap
         {
             services.AddScoped<IContentPageBusiness, ContentPageBusiness>();
             services.AddScoped<ISystemBusiness, SystemBusiness>();
+            services.AddScoped<IAchievementBusiness, AchievementBusiness>();
         }
     }
 }
