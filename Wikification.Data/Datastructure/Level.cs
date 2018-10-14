@@ -7,6 +7,8 @@ namespace Wikification.Data.Datastructure
         //Properties
         public int Id { get; set; }
         public string Name { get; set; }
+        public ExternalSystem System { get; set; }
+        public int SystemId { get; set; }
         public int XpThreshold { get; set; }
     }
 }

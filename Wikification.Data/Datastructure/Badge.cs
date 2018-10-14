@@ -12,6 +12,8 @@ namespace Wikification.Data.Datastructure
         public int Id { get; set; }
         public string Name { get; set; }
         public string SymbolUrl { get; set; }
+        public ExternalSystem System { get; set; }
+        public int SystemId { get; set; }
         public ICollection<UserBadge> Users { get; set; }
 
         //Methods

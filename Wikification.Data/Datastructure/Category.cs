@@ -12,6 +12,8 @@ namespace Wikification.Data.Datastructure
         public int? BadgeId { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
+        public ExternalSystem System { get; set; }
+        public int SystemId { get; set; }
         public ICollection<PageCategory> Pages { get; set; }
 
         //Methods

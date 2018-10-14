@@ -9,16 +9,22 @@ namespace Wikification.Data.Datastructure
     {
         public ExternalSystem()
         {
+            Badges = new List<Badge>();
+            Categories = new List<Category>();
             Events = new List<Event>();
+            Levels = new List<Level>();
             Pages = new List<ContentPage>();
             Users = new List<User>();
         }
 
         //Properties
+        public ICollection<Badge> Badges { get; set; }
         public string CallbackUrl { get; set; }
+        public ICollection<Category> Categories { get; set; }
         public ICollection<Event> Events { get; private set; }
         public string ExternalId { get; set; }
         public int Id { get; set; }
+        public ICollection<Level> Levels { get; private set; }
         public string Name { get; set; }
         public ICollection<ContentPage> Pages { get; private set; }
         public ICollection<User> Users { get; private set; }
