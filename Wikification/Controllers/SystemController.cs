@@ -19,5 +19,17 @@ namespace Wikification.Controllers
         {
             _systemBusiness.AddNewSystem(request);
         }
+
+        [HttpPost("[action]")]
+        public void AddUser([FromBody] AddUserRequestDto request)
+        {
+            _systemBusiness.AddNewUser(request);
+        }
+
+        [HttpPost("[action]")]
+        public void RemoveUser([FromBody] RemoveUserRequestDto request)
+        {
+            _systemBusiness.RemoveUser(request);
+        }
     }
 }

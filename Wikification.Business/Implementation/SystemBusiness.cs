@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
 using Wikification.Data;
@@ -94,6 +95,47 @@ namespace Wikification.Business.Implementation
 
             _context.Systems.Add(newExternalSystem);
             _context.SaveChanges();
+        }
+
+        public void AddNewUser(AddUserRequestDto request)
+        {
+            var newUser = new User();
+            newUser.SetExternalId(request.ExternalId);
+            newUser.SetUsername(request.Username);
+
+            var system = _context.Systems
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
+            if (system != null)
+            {
+                var existingUser = system.Users
+                    .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
+
+                if (existingUser == null)
+                {
+                    system.Users.Add(newUser);
+                    _context.SaveChanges();
+                }
+            }
+            //TODO notify
+        }
+
+        public void RemoveUser(RemoveUserRequestDto request)
+        {
+            var system = _context.Systems
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
+            if (system != null)
+            {
+                var existingUser = system.Users
+                    .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
+                if (existingUser != null)
+                {
+                    system.Users.Remove(existingUser);
+                    _context.SaveChanges();
+                }
+            }
+            //TODO notify
         }
     }
 }
