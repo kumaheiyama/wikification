@@ -1,4 +1,4 @@
-﻿namespace Wikification.Business
+﻿namespace Wikification.Business.Dto.Model
 {
     public class BadgeDto
     {

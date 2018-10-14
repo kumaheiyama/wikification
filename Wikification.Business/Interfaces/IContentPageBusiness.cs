@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 
 namespace Wikification.Business.Interfaces

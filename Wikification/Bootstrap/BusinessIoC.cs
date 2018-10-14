@@ -9,6 +9,7 @@ namespace Wikification.Bootstrap
         internal static void AddAllDependencies(IServiceCollection services)
         {
             services.AddScoped<IContentPageBusiness, ContentPageBusiness>();
+            services.AddScoped<ISystemBusiness, SystemBusiness>();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wikification.Data.Datastructure.Linking;
 using Wikification.Data.Interfaces;
 
 namespace Wikification.Data.Datastructure
@@ -9,17 +10,22 @@ namespace Wikification.Data.Datastructure
     {
         public ContentPage()
         {
-            Editions = new Edition[0];
-            Categories = new Category[0];
-            Badges = new Badge[0];
+            Categories = new List<PageCategory>();
+            Editions = new List<Edition>();
         }
 
-        public int Id { get; set; }
-        public string Title { get; set; }
+        //Properties
+        public Badge Badge { get; private set; }
+        public int? BadgeId { get; set; }
+        public ICollection<PageCategory> Categories { get; private set; }
+        public string Contents { get { return LatestEdition().ParsedContents(); } }
         public ICollection<Edition> Editions { get; private set; }
-        public ICollection<Category> Categories { get; private set; }
-        public ICollection<Badge> Badges { get; private set; }
+        public int Id { get; set; }
+        public ExternalSystem System { get; set; }
+        public int SystemId { get; set; }
+        public string Title { get; set; }
 
+        //Methods
         public Edition LatestEdition()
         {
             var latestEdition = Editions.OrderByDescending(x => x.Version.ToString()).FirstOrDefault();
@@ -35,30 +41,26 @@ namespace Wikification.Data.Datastructure
         }
         public void AddCategory(Category category)
         {
-            if (!Categories.Contains(category)) {
-                Categories.Add(category);
+            if (!Categories.Any(x => x.CategoryId == category.Id && x.PageId == this.Id))
+            {
+                Categories.Add(new PageCategory
+                {
+                    Category = category,
+                    Page = this
+                });
             }
         }
         public void RemoveCategory(Category category)
         {
-            if (Categories.Contains(category))
+            var pageCategory = Categories.FirstOrDefault(x => x.CategoryId == category.Id && x.PageId == this.Id);
+            if (pageCategory != null)
             {
-                Categories.Remove(category);
+                Categories.Remove(pageCategory);
             }
         }
-        public void AddBadge(Badge badge)
+        public void SetBadge(Badge badge)
         {
-            if (!Badges.Contains(badge))
-            {
-                Badges.Add(badge);
-            }
-        }
-        public void RemoveBadge(Badge badge)
-        {
-            if(Badges.Contains(badge))
-            {
-                Badges.Remove(badge);
-            }
+            Badge = badge;
         }
 
         public int CalculatedAwardedXp()

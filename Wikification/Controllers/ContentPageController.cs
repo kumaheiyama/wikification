@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Wikification.Business;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Interfaces;
 
 namespace Wikification.Controllers
@@ -20,5 +20,16 @@ namespace Wikification.Controllers
         {
             return _pageBusiness.GetAllContentPages();
         }
+
+        [HttpPut("[action]")]
+        public void PageRead(ContentPageDto page, UserDto user)
+        {
+            //Award XP, notify
+            //(Award badge, notify)
+            //(Award level, notify)
+            //Notify
+        }
+
+
     }
 }

@@ -1,0 +1,7 @@
+title Add new external system
+
+ExternalSystem->Wikifi: Add listener
+Wikifi->Wikifi: Add new ExternalSystem
+Wikifi->Wikifi: Add list of Users
+ExternalSystem->Wikifi: Set admin User
+Wikifi->Wikifi: Set admin User priviliges

@@ -1,0 +1,37 @@
+﻿#https://dotnetcore.gaprogman.com/2017/06/08/continuous-integration-and-appveyor
+version: '0.1.{build}'
+image: Visual Studio 2017
+branches:
+  only:
+  - master
+init:
+  - cmd: git config --global core.autocrlf true
+
+install:
+  #repo specific settings
+
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./src/src.csproj --verbosity m
+
+build_script:
+  - cmd: dotnet publish .src/src.csproj
+
+after_build:
+  #performed after build
+
+artifacts:
+  - path: '\src\bin\Release\netcoreapp2.1'
+    name: WebSite
+    type: WebDeployPackage
+
+clone_depth: 1
+
+test_script:
+  # testing
+
+on_finish:
+  #any cleaning
+
+deploy: off
+  

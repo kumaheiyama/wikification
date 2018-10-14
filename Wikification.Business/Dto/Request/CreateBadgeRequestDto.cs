@@ -1,9 +1,10 @@
 ﻿namespace Wikification.Business.Dto.Model
 {
-    public class CategoryDto
+    public class CreateBadgeRequestDto
     {
         public string Name { get; set; }
-        public BadgeDto Badge { get; set; }
+        public string SymbolUrl { get; set; }
+        public string Description { get; set; }
         public int AwardedXp { get; set; }
     }
 }

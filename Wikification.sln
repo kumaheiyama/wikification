@@ -9,7 +9,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wikification.Business", "Wi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wikification.Business.Tests", "Wikification.Business.Tests\Wikification.Business.Tests.csproj", "{122C91B2-C7A6-40B8-B03A-3B3E7E42E079}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wikification", "Wikification\Wikification.csproj", "{823179B2-4511-43CB-8535-2A2EFC323953}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wikification", "Wikification\Wikification.csproj", "{823179B2-4511-43CB-8535-2A2EFC323953}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sequence diagrammes", "Sequence diagrammes", "{329CC4EC-C6BD-4E7D-AD67-16F48E7F98BC}"
+	ProjectSection(SolutionItems) = preProject
+		AddExternalSystem.txt = AddExternalSystem.txt
+		AddPage.txt = AddPage.txt
+		AddRemoveUser.txt = AddRemoveUser.txt
+		ReadPage.txt = ReadPage.txt
+		UpdatePage.txt = UpdatePage.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
