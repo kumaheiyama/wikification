@@ -46,16 +46,15 @@ namespace Wikification.Business.Implementation
                 .ThenInclude(cat => cat.Badge)
                 .Select(x => new ContentPageDto
                 {
-                    //TODO Funkar inte av någon anledning...
-                    //Badge = x.Badge != null
-                    //    ? new BadgeDto
-                    //    {
-                    //        AwardedXp = x.Badge.CalculatedAwardedXp(),
-                    //        Description = x.Badge.Description,
-                    //        Name = x.Badge.Name,
-                    //        SymbolUrl = x.Badge.SymbolUrl
-                    //    }
-                    //    : null,
+                    Badge = x.Badge != null
+                        ? new BadgeDto
+                        {
+                            AwardedXp = x.Badge.CalculatedAwardedXp(),
+                            Description = x.Badge.Description,
+                            Name = x.Badge.Name,
+                            SymbolUrl = x.Badge.SymbolUrl
+                        }
+                        : new BadgeDto(),
                     Categories = x.Categories
                         .Select(y => new CategoryDto
                         {
