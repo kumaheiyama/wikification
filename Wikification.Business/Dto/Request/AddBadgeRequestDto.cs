@@ -10,5 +10,6 @@ namespace Wikification.Business.Dto.Request
         public string Description { get; set; }
         public string Name { get; set; }
         public string SymbolUrl { get; set; }
+        public string SystemExternalId { get; set; }
     }
 }

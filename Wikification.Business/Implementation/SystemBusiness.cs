@@ -30,7 +30,18 @@ namespace Wikification.Business.Implementation
             //Add users
             var lowestLevel = _context.Levels
                 .OrderBy(x => x.XpThreshold)
-                .First();
+                .FirstOrDefault();
+            if (lowestLevel == null)
+            {
+                var newDefaultLevel = new Level
+                {
+                    Name = "Default level",
+                    System = newExternalSystem,
+                    XpThreshold = 0
+                };
+                _context.Levels.Add(newDefaultLevel);
+            }
+
             foreach (var user in request.Users)
             {
                 var newUser = new User();
@@ -68,7 +79,8 @@ namespace Wikification.Business.Implementation
                         var newCat = new Category
                         {
                             AwardedXp = cat.AwardedXp,
-                            Name = cat.Name
+                            Name = cat.Name,
+                            System = newExternalSystem
                         };
 
                         if (badge == null && cat.Badge != null)
@@ -78,7 +90,8 @@ namespace Wikification.Business.Implementation
                                 AwardedXp = cat.Badge.AwardedXp,
                                 Description = cat.Badge.Description,
                                 Name = cat.Badge.Name,
-                                SymbolUrl = cat.Badge.SymbolUrl
+                                SymbolUrl = cat.Badge.SymbolUrl,
+                                System = newExternalSystem
                             };
                         }
                         newCat.SetBadge(badge);

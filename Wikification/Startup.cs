@@ -29,6 +29,9 @@ namespace Wikification
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            var conn = Configuration.GetConnectionString("MainContext");
+            services.AddDbContext<MainContext>(options => options.UseSqlServer(conn));
+
             BusinessIoC.AddAllDependencies(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -38,9 +41,6 @@ namespace Wikification
             {
                 configuration.RootPath = "ClientApp/build";
             });
-
-            var conn = Configuration.GetConnectionString("MainContext");
-            services.AddDbContext<MainContext>(options => options.UseSqlServer(conn));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

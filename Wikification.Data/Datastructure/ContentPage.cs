@@ -20,6 +20,7 @@ namespace Wikification.Data.Datastructure
         public ICollection<PageCategory> Categories { get; private set; }
         public string Contents { get { return LatestEdition().ParsedContents(); } }
         public ICollection<Edition> Editions { get; private set; }
+        public string ExternalId { get; private set; }
         public int Id { get; set; }
         public ExternalSystem System { get; set; }
         public int SystemId { get; set; }
@@ -61,6 +62,10 @@ namespace Wikification.Data.Datastructure
         public void SetBadge(Badge badge)
         {
             Badge = badge;
+        }
+        public void SetExternalId(string externalId)
+        {
+            ExternalId = externalId;
         }
 
         public int CalculatedAwardedXp()
