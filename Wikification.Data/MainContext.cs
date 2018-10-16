@@ -27,5 +27,6 @@ namespace Wikification.Data
         public DbSet<Level> Levels { get; set; }
         public DbSet<ExternalSystem> Systems { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<LogPost> Logs { get; set; }
     }
 }

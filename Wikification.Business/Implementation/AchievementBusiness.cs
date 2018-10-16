@@ -5,7 +5,6 @@ using System.Linq;
 using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Dto.Response;
-using Wikification.Business.Exceptions;
 using Wikification.Business.Interfaces;
 using Wikification.Data;
 using Wikification.Data.Datastructure;
@@ -25,10 +24,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddBadgeRequestDto.SystemExternalId");
-            }
 
             var existingBadge = _context.Badges
                 .Where(x => x.SystemId == system.Id)
@@ -53,10 +48,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
-            }
 
             var existingLevel = _context.Levels
                 .FirstOrDefault(x => x.Name == request.Name);
@@ -78,10 +69,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == externalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(externalId, $"External Id '{externalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
-            }
 
             var level = _context.Levels
                 .Where(x => x.SystemId == system.Id)
@@ -105,10 +92,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == externalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(externalId, $"External Id '{externalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
-            }
 
             var badges = _context.Badges
                 .Where(x => x.SystemId == system.Id)
@@ -128,10 +111,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == externalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(externalId, $"External Id '{externalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
-            }
 
             var levels = _context.Levels
                 .Where(x => x.SystemId == system.Id)
@@ -150,10 +129,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == externalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(externalId, $"External Id '{externalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
-            }
 
             var badges = _context.Badges
                 .Include(x => x.Users)
@@ -197,10 +172,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == externalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(externalId, $"External Id '{externalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
-            }
 
             var badges = _context.Badges
                 .Where(x => x.SystemId == system.Id)
@@ -221,18 +192,10 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "RemoveBadgeRequestDto.SystemExternalId");
-            }
 
             var existingBadge = _context.Badges
                 .Where(x => x.SystemId == system.Id)
                 .FirstOrDefault(x => x.Id == request.BadgeId);
-            if (existingBadge == null)
-            {
-                throw new EntityNotFoundException("Badge", $"Badge '{request.BadgeId}' was not found.", "RemoveBadgeRequestDto.BadgeId");
-            }
 
             var pages = _context.ContentPages
                 .Where(x => x.SystemId == system.Id)
@@ -268,18 +231,10 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
-            if (system == null)
-            {
-                throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "RemoveLevelRequestDto.SystemExternalId");
-            }
 
             var existingLevel = _context.Levels
                 .Where(x => x.SystemId == system.Id)
                 .FirstOrDefault(x => x.Id == request.LevelId);
-            if (existingLevel == null)
-            {
-                throw new EntityNotFoundException("Level", $"Level '{request.LevelId}' was not found.", "RemoveLevelRequestDto.LevelId");
-            }
 
             _context.Levels
                 .Remove(existingLevel);

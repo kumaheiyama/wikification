@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Wikification.Data.Datastructure;
 
 namespace Wikification.Data
 {

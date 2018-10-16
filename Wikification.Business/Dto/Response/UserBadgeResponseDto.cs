@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Wikification.Business.Dto.Model;
 
 namespace Wikification.Business.Dto.Response

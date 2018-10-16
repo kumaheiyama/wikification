@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Wikification.Business.Dto.Model;
@@ -8,7 +7,6 @@ using Wikification.Business.Dto.Response;
 using Wikification.Business.Exceptions;
 using Wikification.Business.Interfaces;
 using Wikification.Data;
-using Wikification.Data.Datastructure;
 
 namespace Wikification.Business.Implementation
 {
@@ -24,6 +22,7 @@ namespace Wikification.Business.Implementation
         public override void AddBadge(AddBadgeRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
@@ -36,6 +35,7 @@ namespace Wikification.Business.Implementation
         public override void AddLevel(AddLevelRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
@@ -48,6 +48,7 @@ namespace Wikification.Business.Implementation
         public override LevelDto GetAchievedLevel(string externalId, int currentXp)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == externalId);
             if (system == null)
             {
@@ -60,6 +61,7 @@ namespace Wikification.Business.Implementation
         public override ICollection<BadgeDto> GetAllBadges(string externalId)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == externalId);
             if (system == null)
             {
@@ -72,6 +74,7 @@ namespace Wikification.Business.Implementation
         public override ICollection<LevelDto> GetAllLevels(string externalId)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == externalId);
             if (system == null)
             {
@@ -84,6 +87,7 @@ namespace Wikification.Business.Implementation
         public override UserBadgeResponseDto GetAwardedBadges(string externalId)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == externalId);
             if (system == null)
             {
@@ -96,6 +100,7 @@ namespace Wikification.Business.Implementation
         public override ICollection<BadgeDto> GetUnawardedBadges(string externalId)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == externalId);
             if (system == null)
             {
@@ -108,10 +113,20 @@ namespace Wikification.Business.Implementation
         public override void RemoveBadge(RemoveBadgeRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "RemoveBadgeRequestDto.SystemExternalId");
+            }
+
+            var existingBadge = _context.Badges
+                .AsNoTracking()
+                .Where(x => x.SystemId == system.Id)
+                .FirstOrDefault(x => x.Id == request.BadgeId);
+            if (existingBadge == null)
+            {
+                throw new EntityNotFoundException("Badge", $"Badge '{request.BadgeId}' was not found.", "RemoveBadgeRequestDto.BadgeId");
             }
 
             base.RemoveBadge(request);
@@ -120,10 +135,20 @@ namespace Wikification.Business.Implementation
         public override void RemoveLevel(RemoveLevelRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "RemoveLevelRequestDto.SystemExternalId");
+            }
+
+            var existingLevel = _context.Levels
+                .AsNoTracking()
+                .Where(x => x.SystemId == system.Id)
+                .FirstOrDefault(x => x.Id == request.LevelId);
+            if (existingLevel == null)
+            {
+                throw new EntityNotFoundException("Level", $"Level '{request.LevelId}' was not found.", "RemoveLevelRequestDto.LevelId");
             }
 
             base.RemoveLevel(request);

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Wikification.Business.Dto.Request
+﻿namespace Wikification.Business.Dto.Request
 {
     public class RemoveLevelRequestDto
     {
