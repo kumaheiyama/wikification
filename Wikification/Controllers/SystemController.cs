@@ -36,5 +36,11 @@ namespace Wikification.Controllers
         {
             _systemBusiness.RemoveUser(request);
         }
+
+        [HttpGet("[action]")]
+        public long LastEvent(string externalId)
+        {
+            return _systemBusiness.GetLatestEvent(externalId);
+        }
     }
 }

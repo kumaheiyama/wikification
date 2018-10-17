@@ -18,7 +18,7 @@ namespace Wikification.Business.Implementation
             _context = context;
         }
 
-        public void CreateContentPage(CreateContentPageDto request)
+        public void AddPage(AddContentPageRequestDto request)
         {
             var contentPage = new ContentPage
             {

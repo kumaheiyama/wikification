@@ -18,8 +18,6 @@ namespace Wikification.Business.Implementation
 
         public void AddNewSystem(CreateExternalSystemRequestDto request)
         {
-            if (_context.Systems.Any(x => x.ExternalId == request.ExternalId || x.Name == request.Name)) { return; }
-
             var newExternalSystem = new ExternalSystem
             {
                 CallbackUrl = request.CallbackUrl,
@@ -131,6 +129,17 @@ namespace Wikification.Business.Implementation
                 }
             }
             //TODO notify
+        }
+
+        public long GetLatestEvent(string externalId)
+        {
+            var lastEvent = _context.Events
+                .AsNoTracking()
+                .OrderBy(x => x.Timestamp)
+                .LastOrDefault(x => x.System.ExternalId == externalId);
+            if (lastEvent == null) { return 0; }
+
+            return lastEvent.Timestamp;
         }
 
         public void RemoveUser(RemoveUserRequestDto request)

@@ -2,11 +2,12 @@
 
 namespace Wikification.Business.Dto.Request
 {
-    public class CreateContentPageDto
+    public class AddContentPageRequestDto
     {
-        public string Title { get; set; }
-        public string Contents { get; set; }
         public int AwardedXp { get; set; }
         public ICollection<AddCategoryRequestDto> Categories { get; set; }
+        public string Contents { get; set; }
+        public string SystemExternalId { get; set; }
+        public string Title { get; set; }
     }
 }

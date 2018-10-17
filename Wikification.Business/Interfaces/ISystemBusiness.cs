@@ -7,5 +7,6 @@ namespace Wikification.Business.Interfaces
         void AddNewSystem(CreateExternalSystemRequestDto externalSystem);
         void AddNewUser(AddUserRequestDto request);
         void RemoveUser(RemoveUserRequestDto request);
+        long GetLatestEvent(string externalId);
     }
 }
