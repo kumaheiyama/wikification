@@ -48,11 +48,13 @@ namespace Wikification
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseMiddleware<JsonExceptionHandling>();
+                //app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                app.UseMiddleware<JsonExceptionHandling>();
+                //app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
