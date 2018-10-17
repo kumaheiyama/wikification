@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Exceptions;
 using Wikification.Business.Interfaces;
@@ -18,7 +20,9 @@ namespace Wikification.Business.Implementation
 
         public override void AddNewSystem(CreateExternalSystemRequestDto request)
         {
-            if (_context.Systems.Any(x => x.ExternalId == request.ExternalId || x.Name == request.Name)) {
+            if (_context.Systems
+                .AsNoTracking()
+                .Any(x => x.ExternalId == request.ExternalId || x.Name == request.Name)) {
                 throw new SystemExistsException($"System '{request.ExternalId}' already exists.", request.ExternalId, request.Name);
             }
 
@@ -28,6 +32,7 @@ namespace Wikification.Business.Implementation
         public override void AddNewUser(AddUserRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
@@ -41,6 +46,7 @@ namespace Wikification.Business.Implementation
         public override void RemoveUser(RemoveUserRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
@@ -49,6 +55,34 @@ namespace Wikification.Business.Implementation
             }
 
             base.RemoveUser(request);
+        }
+
+        public override long GetLatestEvent(string externalId)
+        {
+            var system = _context.Systems
+                .AsNoTracking()
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.ExternalId == externalId);
+            if (system == null)
+            {
+                throw new SystemNotFoundException(externalId, $"External Id '{externalId}' is not valid.", "GetLatestEvent.ExternalId");
+            }
+
+            return base.GetLatestEvent(externalId);
+        }
+
+        public override ICollection<EventDto> GetEvents(string externalId, long startTimestamp, long endTimestamp = 0)
+        {
+            var system = _context.Systems
+                .AsNoTracking()
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.ExternalId == externalId);
+            if (system == null)
+            {
+                throw new SystemNotFoundException(externalId, $"External Id '{externalId}' is not valid.", "GetEvents.ExternalId");
+            }
+
+            return base.GetEvents(externalId, startTimestamp, endTimestamp);
         }
     }
 }

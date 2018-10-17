@@ -19,6 +19,7 @@ namespace Wikification.Business.Implementation
         public override void AddPage(AddContentPageRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
@@ -37,6 +38,7 @@ namespace Wikification.Business.Implementation
         public override void AddCategory(AddCategoryRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
@@ -49,6 +51,7 @@ namespace Wikification.Business.Implementation
         public override void RemoveCategory(RemoveCategoryRequestDto request)
         {
             var system = _context.Systems
+                .AsNoTracking()
                 .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)

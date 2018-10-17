@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using System.Collections.Generic;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
 
@@ -24,7 +25,7 @@ namespace Wikification.Business.Implementation
             _inner.AddNewUser(request);
         }
 
-        public long GetLatestEvent(string externalId)
+        public virtual long GetLatestEvent(string externalId)
         {
             return _inner.GetLatestEvent(externalId);
         }
@@ -32,6 +33,11 @@ namespace Wikification.Business.Implementation
         public virtual void RemoveUser(RemoveUserRequestDto request)
         {
             _inner.RemoveUser(request);
+        }
+
+        public virtual ICollection<EventDto> GetEvents(string externalId, long startTimestamp, long endTimestamp = 0)
+        {
+            return _inner.GetEvents(externalId, startTimestamp, endTimestamp);
         }
     }
 }
