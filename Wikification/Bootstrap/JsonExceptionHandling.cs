@@ -7,6 +7,9 @@ using Wikification.Business.Exceptions;
 
 namespace Wikification.Bootstrap
 {
+    /// <summary>
+    /// https://stackoverflow.com/questions/38630076/asp-net-core-web-api-exception-handling/38935583
+    /// </summary>
     public class JsonExceptionHandling
     {
         private readonly RequestDelegate _next;
