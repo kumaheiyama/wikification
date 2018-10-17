@@ -33,6 +33,7 @@ namespace Wikification.Data.Datastructure
 
         public enum EventType
         {
+            Other,
             BadgeAdded,
             BadgeEarned,
             BadgeRemoved,

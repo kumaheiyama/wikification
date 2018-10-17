@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
 using Wikification.Data;
@@ -158,6 +160,32 @@ namespace Wikification.Business.Implementation
                 }
             }
             //TODO notify
+        }
+
+        public ICollection<EventDto> GetEvents(string externalId, long startTimestamp, long endTimestamp = 0)
+        {
+            var events = _context.Events
+                .AsNoTracking()
+                .Where(x => x.System.ExternalId == externalId)
+                .Where(x => x.Timestamp >= startTimestamp);
+            if (endTimestamp > 0 && endTimestamp > startTimestamp)
+            {
+                events = events
+                    .Where(x => x.Timestamp <= endTimestamp);
+            }
+
+            var response = events
+                .OrderBy(x => x.Timestamp)
+                .Select(x => new EventDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Timestamp = x.Timestamp,
+                    Type = (EventDto.EventDtoType)x.Type
+                })
+                .ToArray();
+
+            return response;
         }
     }
 }
