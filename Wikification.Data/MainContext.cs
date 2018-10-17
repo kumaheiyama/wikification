@@ -28,5 +28,6 @@ namespace Wikification.Data
         public DbSet<ExternalSystem> Systems { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<LogPost> Logs { get; set; }
+        public DbSet<Event> Events { get; set; }
     }
 }

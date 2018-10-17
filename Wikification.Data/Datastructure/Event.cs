@@ -1,4 +1,5 @@
-﻿using Wikification.Data.Interfaces;
+﻿using System;
+using Wikification.Data.Interfaces;
 
 namespace Wikification.Data.Datastructure
 {
@@ -6,8 +7,44 @@ namespace Wikification.Data.Datastructure
     {
         //Properties
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public ExternalSystem System { get; set; }
         public int SystemId { get; set; }
+        public long Timestamp { get; private set; }
+        public EventType Type { get; private set; }
+
+        //Methods
+        public void SetName(string name)
+        {
+            Name = name;
+        }
+        public void SetTimestamp(long timestamp)
+        {
+            Timestamp = timestamp;
+        }
+        public void SetTimestamp(DateTime dateTime)
+        {
+            Timestamp = dateTime.ToUniversalTime().Ticks;
+        }
+        public void SetType(EventType type)
+        {
+            Type = type;
+        }
+
+        public enum EventType
+        {
+            BadgeAdded,
+            BadgeEarned,
+            BadgeRemoved,
+            CategoryAdded,
+            CategoryRemoved,
+            EditionRead,
+            EditionAdded,
+            LevelEarned,
+            LevelRemoved,
+            XpEarned,
+            UserAdded,
+            UserRemoved
+        }
     }
 }
