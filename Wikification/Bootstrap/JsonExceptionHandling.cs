@@ -37,7 +37,8 @@ namespace Wikification.Bootstrap
 
             var result = JsonConvert.SerializeObject(new
             {
-                message = exception.Message
+                message = exception.Message,
+                stackTrace = exception.StackTrace
             });
             if (exception is SystemExistsException) {
                 code = HttpStatusCode.Forbidden;
