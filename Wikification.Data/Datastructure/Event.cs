@@ -30,22 +30,22 @@ namespace Wikification.Data.Datastructure
         {
             Type = type;
         }
-
-        public enum EventType
-        {
-            Other,
-            BadgeAdded,
-            BadgeEarned,
-            BadgeRemoved,
-            CategoryAdded,
-            CategoryRemoved,
-            EditionRead,
-            EditionAdded,
-            LevelEarned,
-            LevelRemoved,
-            XpEarned,
-            UserAdded,
-            UserRemoved
-        }
+    }
+    public enum EventType
+    {
+        Other,
+        BadgeAdded,
+        BadgeEarned,
+        BadgeRemoved,
+        CategoryAdded,
+        CategoryRemoved,
+        EditionRead,
+        EditionAdded,
+        LevelEarned,
+        LevelRemoved,
+        XpEarned,
+        UserAdded,
+        UserRemoved,
+        LevelAdded
     }
 }

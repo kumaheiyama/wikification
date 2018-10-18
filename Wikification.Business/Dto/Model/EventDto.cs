@@ -2,7 +2,6 @@
 {
     public class EventDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public long Timestamp { get; set; }
         public EventDtoType Type { get; set; }
@@ -17,6 +16,7 @@
             CategoryRemoved,
             EditionRead,
             EditionAdded,
+            LevelAdded,
             LevelEarned,
             LevelRemoved,
             XpEarned,

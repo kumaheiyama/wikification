@@ -14,11 +14,14 @@ namespace Wikification.Bootstrap
         internal static void AddAllDependencies(IServiceCollection services)
         {
             services.AddScoped<ILogifier, Logifier>();
+            services.AddScoped<IEventLogger, EventLogger>();
 
             services.AddScoped<IContentPageBusiness, ContentPageBusiness>();
             services.Decorate<IContentPageBusiness, ContentPageBusinessDecorator>();
             services.Decorate<IContentPageBusiness>((inner, provider)
-                => new ContentPageBusinessEventLoggingDecorator(inner, provider.GetRequiredService<MainContext>()));
+                => new ContentPageBusinessEventLoggingDecorator(inner,
+                    provider.GetRequiredService<MainContext>(),
+                    provider.GetRequiredService<IEventLogger>()));
             services.Decorate<IContentPageBusiness>((inner, provider)
                 => new ContentPageBusinessValidationDecorator(inner, provider.GetRequiredService<MainContext>()));
             services.Decorate<IContentPageBusiness>((inner, provider)
@@ -27,7 +30,9 @@ namespace Wikification.Bootstrap
             services.AddScoped<ISystemBusiness, SystemBusiness>();
             services.Decorate<ISystemBusiness, SystemBusinessDecorator>();
             services.Decorate<ISystemBusiness>((inner, provider)
-                => new SystemBusinessEventLoggingDecorator(inner, provider.GetRequiredService<MainContext>()));
+                => new SystemBusinessEventLoggingDecorator(inner,
+                    provider.GetRequiredService<MainContext>(),
+                    provider.GetRequiredService<IEventLogger>()));
             services.Decorate<ISystemBusiness>((inner, provider)
                 => new SystemBusinessValidationDecorator(inner, provider.GetRequiredService<MainContext>()));
             services.Decorate<ISystemBusiness>((inner, provider)
@@ -36,7 +41,7 @@ namespace Wikification.Bootstrap
             services.AddScoped<IAchievementBusiness, AchievementBusiness>();
             services.Decorate<IAchievementBusiness, AchievementBusinessDecorator>();
             services.Decorate<IAchievementBusiness>((inner, provider)
-                => new AchievementBusinessEventLoggingDecorator(inner, provider.GetRequiredService<MainContext>()));
+                => new AchievementBusinessEventLoggingDecorator(inner, provider.GetRequiredService<MainContext>(), provider.GetRequiredService<IEventLogger>()));
             services.Decorate<IAchievementBusiness>((inner, provider)
                 => new AchievementBusinessValidationDecorator(inner, provider.GetRequiredService<MainContext>()));
             services.Decorate<IAchievementBusiness>((inner, provider)
