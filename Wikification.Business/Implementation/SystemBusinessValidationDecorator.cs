@@ -33,11 +33,18 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .AsNoTracking()
-                .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddUserRequestDto.SystemExternalId");
+            }
+            var existingUser = _context.Users
+                .AsNoTracking()
+                .Where(x => x.System == system)
+                .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
+            if (existingUser != null)
+            {
+                throw new EntityNotFoundException(existingUser.GetType().Name, $"User '{request.ExternalId}' not found.", "AddUserRequestDto.ExternalId");
             }
 
             base.AddNewUser(request);

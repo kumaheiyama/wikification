@@ -45,6 +45,11 @@ namespace Wikification.Business.Implementation
             return _inner.GetAwardedBadges(externalId);
         }
 
+        public BadgeDto GetBadge(string systemExternalId, string name)
+        {
+            return _inner.GetBadge(systemExternalId, name);
+        }
+
         public virtual ICollection<BadgeDto> GetUnawardedBadges(string externalId)
         {
             return _inner.GetUnawardedBadges(externalId);

@@ -28,6 +28,14 @@ namespace Wikification.Business.Implementation
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddBadgeRequestDto.SystemExternalId");
             }
+            var existingBadge = _context.Badges
+                .AsNoTracking()
+                .Where(x => x.SystemId == system.Id)
+                .FirstOrDefault(x => x.Name == request.Name);
+            if (existingBadge != null)
+            {
+                throw new EntityExistsException(existingBadge.GetType().Name, $"Badge '{request.Name}' already exists.", "AddBadgeRequestDto.Name");
+            }
 
             base.AddBadge(request);
         }
@@ -40,6 +48,13 @@ namespace Wikification.Business.Implementation
             if (system == null)
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
+            }
+            var existingLevel = _context.Levels
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Name == request.Name);
+            if (existingLevel == null)
+            {
+                throw new EntityExistsException(existingLevel.GetType().Name, $"Level '{request.Name}' already exists.", "AddLevelRequestDto.Name");
             }
 
             base.AddLevel(request);
@@ -123,10 +138,10 @@ namespace Wikification.Business.Implementation
             var existingBadge = _context.Badges
                 .AsNoTracking()
                 .Where(x => x.SystemId == system.Id)
-                .FirstOrDefault(x => x.Id == request.BadgeId);
+                .FirstOrDefault(x => x.Name == request.BadgeName);
             if (existingBadge == null)
             {
-                throw new EntityNotFoundException("Badge", $"Badge '{request.BadgeId}' was not found.", "RemoveBadgeRequestDto.BadgeId");
+                throw new EntityNotFoundException("Badge", $"Badge '{request.BadgeName}' was not found.", "RemoveBadgeRequestDto.BadgeId");
             }
 
             base.RemoveBadge(request);
@@ -145,10 +160,10 @@ namespace Wikification.Business.Implementation
             var existingLevel = _context.Levels
                 .AsNoTracking()
                 .Where(x => x.SystemId == system.Id)
-                .FirstOrDefault(x => x.Id == request.LevelId);
+                .FirstOrDefault(x => x.Name == request.LevelName);
             if (existingLevel == null)
             {
-                throw new EntityNotFoundException("Level", $"Level '{request.LevelId}' was not found.", "RemoveLevelRequestDto.LevelId");
+                throw new EntityNotFoundException("Level", $"Level '{request.LevelName}' was not found.", "RemoveLevelRequestDto.LevelId");
             }
 
             base.RemoveLevel(request);

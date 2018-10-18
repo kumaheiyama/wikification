@@ -119,18 +119,11 @@ namespace Wikification.Business.Implementation
             var system = _context.Systems
                 .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
-            if (system != null)
-            {
-                var existingUser = system.Users
-                    .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
+            var existingUser = system.Users
+                .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
 
-                if (existingUser == null)
-                {
-                    system.Users.Add(newUser);
-                    _context.SaveChanges();
-                }
-            }
-            //TODO notify
+            system.Users.Add(newUser);
+            _context.SaveChanges();
         }
 
         public long GetLatestEvent(string externalId)
@@ -147,19 +140,13 @@ namespace Wikification.Business.Implementation
         public void RemoveUser(RemoveUserRequestDto request)
         {
             var system = _context.Systems
-                .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
-            if (system != null)
-            {
-                var existingUser = system.Users
-                    .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
-                if (existingUser != null)
-                {
-                    system.Users.Remove(existingUser);
-                    _context.SaveChanges();
-                }
-            }
-            //TODO notify
+            var existingUser = _context.Users
+                .Where(x => x.System == system)
+                .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
+
+            system.Users.Remove(existingUser);
+            _context.SaveChanges();
         }
 
         public ICollection<EventDto> GetEvents(string externalId, long startTimestamp, long endTimestamp = 0)
@@ -178,7 +165,6 @@ namespace Wikification.Business.Implementation
                 .OrderBy(x => x.Timestamp)
                 .Select(x => new EventDto
                 {
-                    Id = x.Id,
                     Name = x.Name,
                     Timestamp = x.Timestamp,
                     Type = (EventDto.EventDtoType)x.Type

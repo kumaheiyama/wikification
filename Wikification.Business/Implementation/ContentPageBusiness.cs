@@ -12,10 +12,12 @@ namespace Wikification.Business.Implementation
     public class ContentPageBusiness : IContentPageBusiness
     {
         private readonly MainContext _context;
+        private readonly IAchievementBusiness _achievementBusiness;
 
-        public ContentPageBusiness(MainContext context)
+        public ContentPageBusiness(MainContext context, IAchievementBusiness achievementBusiness)
         {
             _context = context;
+            _achievementBusiness = achievementBusiness;
         }
 
         public void AddPage(AddContentPageRequestDto request)
@@ -82,16 +84,15 @@ namespace Wikification.Business.Implementation
 
         public void AddCategory(AddCategoryRequestDto request)
         {
-            //Borde istället lägga till ny badge i egen modul och söka upp den?
-            var badge = request.Badge != null
-                ? new Badge
-                {
-                    AwardedXp = request.Badge.AwardedXp,
-                    Description = request.Badge.Description,
-                    Name = request.Badge.Name,
-                    SymbolUrl = request.Badge.SymbolUrl
-                }
-                : null;
+            var system = _context.Systems
+                .AsNoTracking()
+                .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
+
+            _achievementBusiness.AddBadge(request.Badge);
+            var badge = _context.Badges
+                .AsNoTracking()
+                .Where(x => x.System == system)
+                .FirstOrDefault(x => x.Name == request.Badge.Name);
             var category = new Category
             {
                 AwardedXp = request.AwardedXp,

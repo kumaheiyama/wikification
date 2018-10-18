@@ -20,7 +20,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .AsNoTracking()
-                .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
@@ -30,20 +29,18 @@ namespace Wikification.Business.Implementation
             base.AddPage(request);
         }
 
-        //public override ICollection<ContentPageDto> GetAllContentPages()
-        //{
-        //    return base.GetAllContentPages();
-        //}
-
         public override void AddCategory(AddCategoryRequestDto request)
         {
             var system = _context.Systems
                 .AsNoTracking()
-                .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddCategoryRequestDto.SystemExternalId");
+            }
+            if (request.Badge != null && request.SystemExternalId != request.Badge.SystemExternalId)
+            {
+                throw new SystemNotFoundException(request.Badge.SystemExternalId, $"External Id '{request.Badge.SystemExternalId}' is not valid.", "AddCategoryRequestDto.Badge.SystemExternalId");
             }
 
             base.AddCategory(request);
@@ -52,7 +49,6 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .AsNoTracking()
-                .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
             {
