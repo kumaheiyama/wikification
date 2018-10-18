@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
-using Wikification.Data;
 using Wikification.Data.Interfaces;
 
 namespace Wikification.Controllers

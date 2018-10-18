@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
 using Wikification.Data.Interfaces;
@@ -38,9 +40,15 @@ namespace Wikification.Controllers
         }
 
         [HttpGet("[action]")]
-        public long LastEvent(string externalId)
+        public long LatestEvent(string externalId)
         {
             return _systemBusiness.GetLatestEvent(externalId);
+        }
+
+        [HttpGet("[action]")]
+        public ICollection<EventDto> GetEvents(string externalId, long startTimestamp, long endTimestamp = 0)
+        {
+            return _systemBusiness.GetEvents(externalId, startTimestamp, endTimestamp);
         }
     }
 }

@@ -16,5 +16,6 @@ namespace Wikification.Business.Interfaces
         UserBadgeResponseDto GetAwardedBadges(string externalId);
         ICollection<BadgeDto> GetUnawardedBadges(string externalId);
         LevelDto GetAchievedLevel(string externalId, int currentXp);
+        BadgeDto GetBadge(string systemExternalId, string name);
     }
 }
