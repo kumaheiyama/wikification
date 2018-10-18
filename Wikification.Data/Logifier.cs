@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data.SqlClient;
+using Wikification.Data.Datastructure;
 using Wikification.Data.Interfaces;
-using static Wikification.Data.Datastructure.LogPost;
 
 namespace Wikification.Data
 {
@@ -35,7 +35,7 @@ namespace Wikification.Data
             var exceptionType = new SqlParameter("@exceptionType", exception != null ? nameof(exception) : string.Empty);
             var msg = new SqlParameter("@message", message);
             var sender = new SqlParameter("@sender", string.Empty);
-            var severity = new SqlParameter("@severity", Severity.Error);
+            var severity = new SqlParameter("@severity", LogSeverity.Error);
             var stackTrace = new SqlParameter("@stackTrace", exception != null && exception.StackTrace != null ? exception.StackTrace : string.Empty);
 
             await _context.Database.ExecuteSqlCommandAsync(

@@ -2,7 +2,7 @@
 {
     public class RemoveBadgeRequestDto
     {
-        public int BadgeId { get; set; }
+        public string BadgeName { get; set; }
         public string SystemExternalId { get; set; }
     }
 }

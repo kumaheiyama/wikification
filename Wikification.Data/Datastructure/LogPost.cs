@@ -6,18 +6,18 @@ namespace Wikification.Data.Datastructure
     {
         public string ExceptionType { get; set; }
         public int Id { get; set; }
-        public Severity Level { get; set; }
+        public LogSeverity Level { get; set; }
         public string Message { get; set; }
         public string Sender { get; set; }
         public string StackTrace { get; set; }
 
-        public enum Severity
-        {
-            Info,
-            Warning,
-            Error,
-            Fatal
-        }
+        
     }
-    
+    public enum LogSeverity
+    {
+        Info,
+        Warning,
+        Error,
+        Fatal
+    }
 }
