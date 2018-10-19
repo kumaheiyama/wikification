@@ -28,8 +28,7 @@ namespace Wikification.Business.Implementation
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddBadgeRequestDto.SystemExternalId");
             }
-            var existingBadge = _context.Badges
-                .AsNoTracking()
+            var existingBadge = system.Badges
                 .Where(x => x.SystemId == system.Id)
                 .FirstOrDefault(x => x.Name == request.Name);
             if (existingBadge != null)
@@ -49,8 +48,7 @@ namespace Wikification.Business.Implementation
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddLevelRequestDto.SystemExternalId");
             }
-            var existingLevel = _context.Levels
-                .AsNoTracking()
+            var existingLevel = system.Levels
                 .FirstOrDefault(x => x.Name == request.Name);
             if (existingLevel == null)
             {
@@ -135,8 +133,7 @@ namespace Wikification.Business.Implementation
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "RemoveBadgeRequestDto.SystemExternalId");
             }
 
-            var existingBadge = _context.Badges
-                .AsNoTracking()
+            var existingBadge = system.Badges
                 .Where(x => x.SystemId == system.Id)
                 .FirstOrDefault(x => x.Name == request.BadgeName);
             if (existingBadge == null)
@@ -157,8 +154,7 @@ namespace Wikification.Business.Implementation
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "RemoveLevelRequestDto.SystemExternalId");
             }
 
-            var existingLevel = _context.Levels
-                .AsNoTracking()
+            var existingLevel = system.Levels
                 .Where(x => x.SystemId == system.Id)
                 .FirstOrDefault(x => x.Name == request.LevelName);
             if (existingLevel == null)

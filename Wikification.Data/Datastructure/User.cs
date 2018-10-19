@@ -7,6 +7,13 @@ namespace Wikification.Data.Datastructure
 {
     public class User : IEntity
     {
+        public User() { }
+        public User(string username, string externalId) : this()
+        {
+            Username = username;
+            ExternalId = externalId;
+        }
+
         //Properties
         public ICollection<UserBadge> EarnedBadges { get; }
         public string ExternalId { get; private set; }
@@ -36,6 +43,7 @@ namespace Wikification.Data.Datastructure
         }
         public void AddReadEdition(Edition edition)
         {
+            if (edition == null) return;
             if (!ReadEditions.Any(x => x.EditionId == edition.Id && x.UserId == this.Id))
             {
                 ReadEditions.Add(new UserEdition {
@@ -46,6 +54,7 @@ namespace Wikification.Data.Datastructure
         }
         public void AddBadge(Badge badge)
         {
+            if (badge == null) return;
             if (!EarnedBadges.Any(x => x.BadgeId == badge.Id && x.UserId == this.Id))
             {
                 EarnedBadges.Add(new UserBadge

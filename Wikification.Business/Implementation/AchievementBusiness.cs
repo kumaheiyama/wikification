@@ -23,56 +23,44 @@ namespace Wikification.Business.Implementation
         public void AddBadge(AddBadgeRequestDto request)
         {
             var system = _context.Systems
+                .Include(x => x.Badges)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
 
-            var newBadge = new Badge
-            {
-                AwardedXp = request.AwardedXp,
-                Description = request.Description,
-                Name = request.Name,
-                SymbolUrl = request.SymbolUrl,
-                System = system
-            };
+            var newBadge = new Badge(request.Name, request.Description, request.SymbolUrl, request.AwardedXp);
 
-            _context.Badges.Add(newBadge);
+            system.Badges.Add(newBadge);
             _context.SaveChanges();
         }
 
         public void AddLevel(AddLevelRequestDto request)
         {
             var system = _context.Systems
+                .Include(x => x.Levels)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
 
-            var newLevel = new Level
-            {
-                Name = request.Name,
-                XpThreshold = request.XpThreshold,
-                System = system
-            };
+            var newLevel = new Level(request.Name, request.XpThreshold);
 
-            _context.Levels.Add(newLevel);
+            system.Levels.Add(newLevel);
             _context.SaveChanges();
         }
 
         public LevelDto GetAchievedLevel(string externalId, int currentXp)
         {
             var system = _context.Systems
+                .Include(x => x.Levels)
                 .FirstOrDefault(x => x.ExternalId == externalId);
 
-            var level = _context.Levels
-                .Where(x => x.SystemId == system.Id)
+            var level = system.Levels
                 .Where(x => x.XpThreshold <= currentXp)
                 .OrderBy(x => x.XpThreshold)
                 .LastOrDefault();
             if (level == null)
             {
-                level = new Level
+                level = new Level("Default", 0)
                 {
-                    Name = "Default",
-                    System = system,
-                    XpThreshold = 0
+                    System = system
                 };
-                _context.Levels.Add(level);
+                system.Levels.Add(level);
                 _context.SaveChanges();
             }
 
@@ -86,10 +74,10 @@ namespace Wikification.Business.Implementation
         public ICollection<BadgeDto> GetAllBadges(string externalId)
         {
             var system = _context.Systems
+                .Include(x => x.Badges)
                 .FirstOrDefault(x => x.ExternalId == externalId);
 
-            var badges = _context.Badges
-                .Where(x => x.SystemId == system.Id)
+            var badges = system.Badges
                 .Select(x => new BadgeDto
                 {
                     AwardedXp = x.AwardedXp,
@@ -105,10 +93,10 @@ namespace Wikification.Business.Implementation
         public ICollection<LevelDto> GetAllLevels(string externalId)
         {
             var system = _context.Systems
+                .Include(x => x.Levels)
                 .FirstOrDefault(x => x.ExternalId == externalId);
 
-            var levels = _context.Levels
-                .Where(x => x.SystemId == system.Id)
+            var levels = system.Levels
                 .Select(x => new LevelDto
                 {
                     Name = x.Name,
@@ -122,12 +110,12 @@ namespace Wikification.Business.Implementation
         public UserBadgeResponseDto GetAwardedBadges(string externalId)
         {
             var system = _context.Systems
+                .Include(x => x.Badges)
+                .ThenInclude(x => x.Users)
+                .ThenInclude(x => x.User)
                 .FirstOrDefault(x => x.ExternalId == externalId);
 
-            var badges = _context.Badges
-                .Include(x => x.Users)
-                .ThenInclude(x => x.User)
-                .Where(x => x.SystemId == system.Id)
+            var badges = system.Badges
                 .Where(x => x.Users.Count > 0)
                 .ToList();
 
@@ -164,8 +152,11 @@ namespace Wikification.Business.Implementation
 
         public BadgeDto GetBadge(string systemExternalId, string name)
         {
-            var badge = _context.Badges
-                .Where(x => x.System.ExternalId == systemExternalId)
+            var system = _context.Systems
+                .Include(x => x.Badges)
+                .First(x => x.ExternalId == systemExternalId);
+
+            var badge = system.Badges
                 .Select(x => new BadgeDto
                 {
                     AwardedXp = x.CalculatedAwardedXp(),
@@ -181,10 +172,10 @@ namespace Wikification.Business.Implementation
         public ICollection<BadgeDto> GetUnawardedBadges(string externalId)
         {
             var system = _context.Systems
+                .Include(x => x.Badges)
                 .FirstOrDefault(x => x.ExternalId == externalId);
 
-            var badges = _context.Badges
-                .Where(x => x.SystemId == system.Id)
+            var badges = system.Badges
                 .Where(x => x.Users.Count == 0)
                 .ToList();
 
@@ -201,27 +192,26 @@ namespace Wikification.Business.Implementation
         public void RemoveBadge(RemoveBadgeRequestDto request)
         {
             var system = _context.Systems
+                .Include(x => x.Badges)
+                .Include(x => x.Pages)
+                .Include(x => x.Categories)
+                .Include(x => x.Users)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
 
-            var existingBadge = _context.Badges
-                .Where(x => x.SystemId == system.Id)
+            var existingBadge = system.Badges
                 .FirstOrDefault(x => x.Name == request.BadgeName);
 
-            var pages = _context.ContentPages
-                .Where(x => x.SystemId == system.Id)
+            var pages = system.Pages
                 .Where(x => x.BadgeId == existingBadge.Id)
                 .ToList();
             pages.ForEach(x => x.BadgeId = null);
 
-            var categories = _context.Categories
-                .Where(x => x.SystemId == system.Id)
+            var categories = system.Categories
                 .Where(x => x.BadgeId == existingBadge.Id)
                 .ToList();
             categories.ForEach(x => x.BadgeId = null);
 
-            var users = _context.Users
-                .Include(x => x.EarnedBadges)
-                .Where(x => x.SystemId == system.Id)
+            var users = system.Users
                 .Where(x => x.EarnedBadges.Select(y => y.BadgeId).Contains(existingBadge.Id))
                 .ToList();
             foreach (var user in users)
@@ -232,7 +222,7 @@ namespace Wikification.Business.Implementation
                 badges.ForEach(x => user.EarnedBadges.Remove(x));
             }
 
-            _context.Badges
+            system.Badges
                 .Remove(existingBadge);
             _context.SaveChanges();
         }
@@ -240,13 +230,13 @@ namespace Wikification.Business.Implementation
         public void RemoveLevel(RemoveLevelRequestDto request)
         {
             var system = _context.Systems
+                .Include(x => x.Levels)
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
 
-            var existingLevel = _context.Levels
-                .Where(x => x.SystemId == system.Id)
+            var existingLevel = system.Levels
                 .FirstOrDefault(x => x.Name == request.LevelName);
 
-            _context.Levels
+            system.Levels
                 .Remove(existingLevel);
             _context.SaveChanges();
         }

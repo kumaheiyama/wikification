@@ -21,12 +21,12 @@ namespace Wikification.Data
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Badge> Badges { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<ContentPage> ContentPages { get; set; }
-        public DbSet<Level> Levels { get; set; }
+        //public DbSet<Badge> Badges { get; set; }
+        //public DbSet<Category> Categories { get; set; }
+        //public DbSet<ContentPage> ContentPages { get; set; }
+        //public DbSet<Level> Levels { get; set; }
         public DbSet<ExternalSystem> Systems { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<LogPost> Logs { get; set; }
         public DbSet<Event> Events { get; set; }
     }

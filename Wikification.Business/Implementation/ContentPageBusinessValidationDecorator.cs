@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Exceptions;
 using Wikification.Business.Interfaces;
@@ -27,6 +29,12 @@ namespace Wikification.Business.Implementation
             }
 
             base.AddPage(request);
+        }
+
+        public override ICollection<ContentPageDto> GetAllContentPages(string externalId)
+        {
+            if (string.IsNullOrEmpty(externalId)) { return new List<ContentPageDto>(); }
+            return base.GetAllContentPages(externalId);
         }
 
         public override void AddCategory(AddCategoryRequestDto request)

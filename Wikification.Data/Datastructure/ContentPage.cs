@@ -13,6 +13,10 @@ namespace Wikification.Data.Datastructure
             Categories = new List<PageCategory>();
             Editions = new List<Edition>();
         }
+        public ContentPage(string title) : this()
+        {
+            Title = title;
+        }
 
         //Properties
         public Badge Badge { get; private set; }
@@ -34,6 +38,7 @@ namespace Wikification.Data.Datastructure
         }
         public void AddEdition(Edition edition)
         {
+            if (edition == null) return;
             var version = edition.Version.ToString();
             if (!Editions.Select(x => x.Version.ToString()).Contains(version))
             {
@@ -42,6 +47,7 @@ namespace Wikification.Data.Datastructure
         }
         public void AddCategory(Category category)
         {
+            if (category == null) return;
             if (!Categories.Any(x => x.CategoryId == category.Id && x.PageId == this.Id))
             {
                 Categories.Add(new PageCategory
@@ -53,6 +59,7 @@ namespace Wikification.Data.Datastructure
         }
         public void RemoveCategory(Category category)
         {
+            if (category == null) return;
             var pageCategory = Categories.FirstOrDefault(x => x.CategoryId == category.Id && x.PageId == this.Id);
             if (pageCategory != null)
             {
@@ -61,6 +68,7 @@ namespace Wikification.Data.Datastructure
         }
         public void SetBadge(Badge badge)
         {
+            if (badge == null) return;
             Badge = badge;
         }
         public void SetExternalId(string externalId)

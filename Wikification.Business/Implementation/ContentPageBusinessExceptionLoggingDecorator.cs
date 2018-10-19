@@ -29,11 +29,11 @@ namespace Wikification.Business.Implementation
             }
         }
 
-        public override ICollection<ContentPageDto> GetAllContentPages()
+        public override ICollection<ContentPageDto> GetAllContentPages(string externalId)
         {
             try
             {
-                return base.GetAllContentPages();
+                return base.GetAllContentPages(externalId);
             }
             catch (Exception ex)
             {

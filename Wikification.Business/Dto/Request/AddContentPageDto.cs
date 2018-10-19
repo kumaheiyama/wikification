@@ -7,6 +7,7 @@ namespace Wikification.Business.Dto.Request
         public int AwardedXp { get; set; }
         public ICollection<AddCategoryRequestDto> Categories { get; set; }
         public string Contents { get; set; }
+        public string ExternalId { get; set; }
         public string SystemExternalId { get; set; }
         public string Title { get; set; }
     }

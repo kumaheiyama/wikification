@@ -24,6 +24,7 @@ namespace Wikification.Data.Datastructure
         }
         public void SetTimestamp(DateTime dateTime)
         {
+            if (dateTime == null) return;
             Timestamp = dateTime.ToUniversalTime().Ticks;
         }
         public void SetType(EventType type)

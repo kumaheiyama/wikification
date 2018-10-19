@@ -38,8 +38,7 @@ namespace Wikification.Business.Implementation
             {
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "AddUserRequestDto.SystemExternalId");
             }
-            var existingUser = _context.Users
-                .AsNoTracking()
+            var existingUser = system.Users
                 .Where(x => x.System == system)
                 .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
             if (existingUser != null)

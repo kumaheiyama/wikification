@@ -20,33 +20,22 @@ namespace Wikification.Business.Implementation
 
         public void AddNewSystem(CreateExternalSystemRequestDto request)
         {
-            var newExternalSystem = new ExternalSystem
-            {
-                CallbackUrl = request.CallbackUrl,
-                ExternalId = request.ExternalId,
-                Name = request.Name
-            };
+            var newExternalSystem = new ExternalSystem(request.Name, request.ExternalId, request.CallbackUrl);
 
             //Add users
-            var lowestLevel = _context.Levels
+            var lowestLevel = newExternalSystem.Levels
                 .OrderBy(x => x.XpThreshold)
                 .FirstOrDefault();
             if (lowestLevel == null)
             {
-                var newDefaultLevel = new Level
-                {
-                    Name = "Default level",
-                    System = newExternalSystem,
-                    XpThreshold = 0
-                };
-                _context.Levels.Add(newDefaultLevel);
+                var newDefaultLevel = new Level("Default level", 0);
+
+                newExternalSystem.Levels.Add(newDefaultLevel);
             }
 
             foreach (var user in request.Users)
             {
-                var newUser = new User();
-                newUser.SetExternalId(user.ExternalId);
-                newUser.SetUsername(user.Username);
+                var newUser = new User(user.Username, user.ExternalId);
                 newUser.SetLevel(lowestLevel);
                 newExternalSystem.AddUser(newUser);
             }
@@ -54,52 +43,32 @@ namespace Wikification.Business.Implementation
             //Add pages
             foreach (var page in request.Pages)
             {
-                var newPage = new ContentPage
-                {
-                    Title = page.Title,
-                    System = newExternalSystem,
-                };
-                newPage.AddEdition(new Edition
-                {
-                    AwardedXp = page.AwardedXp,
-                    Contents = page.Contents,
-                    EditionDescription = "Initial"
-                });
+                var newPage = new ContentPage(page.Title);
+                var newEdition = new Edition(page.Contents, page.AwardedXp, "Initial");
+                newPage.AddEdition(newEdition);
 
                 //Add categories
-                foreach (var cat in page.Categories)
+                foreach (var category in page.Categories)
                 {
-                    var existingCat = _context.Categories.FirstOrDefault(x => x.Name == cat.Name);
-                    var badge = cat.Badge != null
-                        ? _context.Badges.FirstOrDefault(x => x.Name == cat.Badge.Name)
+                    var existingCategory = newExternalSystem.Categories.FirstOrDefault(x => x.Name == category.Name);
+                    var badge = category.Badge != null
+                        ? newExternalSystem.Badges.FirstOrDefault(x => x.Name == category.Badge.Name)
                         : null;
 
-                    if (existingCat == null)
+                    if (existingCategory == null)
                     {
-                        var newCat = new Category
-                        {
-                            AwardedXp = cat.AwardedXp,
-                            Name = cat.Name,
-                            System = newExternalSystem
-                        };
+                        var newCategory = new Category(category.Name);
 
-                        if (badge == null && cat.Badge != null)
+                        if (badge == null && category.Badge != null)
                         {
-                            badge = new Badge
-                            {
-                                AwardedXp = cat.Badge.AwardedXp,
-                                Description = cat.Badge.Description,
-                                Name = cat.Badge.Name,
-                                SymbolUrl = cat.Badge.SymbolUrl,
-                                System = newExternalSystem
-                            };
+                            badge = new Badge(category.Badge.Name, category.Badge.Description, category.Badge.SymbolUrl, category.Badge.AwardedXp);
                         }
-                        newCat.SetBadge(badge);
-                        newPage.AddCategory(newCat);
+                        newCategory.SetBadge(badge);
+                        newPage.AddCategory(newCategory);
                     }
                     else
                     {
-                        newPage.AddCategory(existingCat);
+                        newPage.AddCategory(existingCategory);
                     }
                 }
 
@@ -112,9 +81,7 @@ namespace Wikification.Business.Implementation
 
         public void AddNewUser(AddUserRequestDto request)
         {
-            var newUser = new User();
-            newUser.SetExternalId(request.ExternalId);
-            newUser.SetUsername(request.Username);
+            var newUser = new User(request.Username, request.ExternalId);
 
             var system = _context.Systems
                 .Include(x => x.Users)
@@ -141,7 +108,7 @@ namespace Wikification.Business.Implementation
         {
             var system = _context.Systems
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
-            var existingUser = _context.Users
+            var existingUser = system.Users
                 .Where(x => x.System == system)
                 .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
 

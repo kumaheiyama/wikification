@@ -8,6 +8,6 @@ namespace Wikification.Business.Dto.Request
         public string ExternalId { get; set; }
         public string Name { get; set; }
         public ICollection<AddContentPageRequestDto> Pages { get; set; }
-        public ICollection<CreateUserRequestDto> Users { get; set; }
+        public ICollection<AddUserRequestDto> Users { get; set; }
     }
 }

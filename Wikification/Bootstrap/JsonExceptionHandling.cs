@@ -35,12 +35,9 @@ namespace Wikification.Bootstrap
         {
             var code = HttpStatusCode.InternalServerError;
 
-            var result = JsonConvert.SerializeObject(new
+            var result = string.Empty;
+            if (exception is SystemExistsException)
             {
-                message = exception.Message,
-                stackTrace = exception.StackTrace
-            });
-            if (exception is SystemExistsException) {
                 code = HttpStatusCode.Forbidden;
                 var ex = (SystemExistsException)exception;
                 result = JsonConvert.SerializeObject(
@@ -50,7 +47,8 @@ namespace Wikification.Bootstrap
                         externalId = ex.ExternalId
                     });
             }
-            else if (exception is SystemNotFoundException) {
+            else if (exception is SystemNotFoundException)
+            {
                 code = HttpStatusCode.BadRequest;
                 var ex = (SystemNotFoundException)exception;
                 result = JsonConvert.SerializeObject(
@@ -60,7 +58,8 @@ namespace Wikification.Bootstrap
                         externalId = ex.ExternalId
                     });
             }
-            else if (exception is EntityNotFoundException) {
+            else if (exception is EntityNotFoundException)
+            {
                 code = HttpStatusCode.BadRequest;
                 var ex = (EntityNotFoundException)exception;
                 result = JsonConvert.SerializeObject(
@@ -69,6 +68,14 @@ namespace Wikification.Bootstrap
                         error = exception.Message,
                         paramName = ex.ParamName
                     });
+            }
+            else
+            {
+                result = JsonConvert.SerializeObject(new
+                {
+                    message = exception.Message,
+                    stackTrace = exception.StackTrace
+                });
             }
 
             context.Response.ContentType = "application/json";

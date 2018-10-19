@@ -17,9 +17,9 @@ namespace Wikification.Controllers
         }
 
         [HttpGet("[action]")]
-        public ICollection<ContentPageDto> GetContentPages()
+        public ICollection<ContentPageDto> GetContentPages(string externalId)
         {
-            return _pageBusiness.GetAllContentPages();
+            return _pageBusiness.GetAllContentPages(externalId);
         }
 
         [HttpPut("[action]")]
