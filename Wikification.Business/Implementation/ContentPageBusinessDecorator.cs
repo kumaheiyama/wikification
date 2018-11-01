@@ -14,9 +14,9 @@ namespace Wikification.Business.Implementation
             _inner = inner;
         }
 
-        public virtual void AddPage(AddContentPageRequestDto request)
+        public virtual void SavePage(SaveContentPageRequestDto request)
         {
-            _inner.AddPage(request);
+            _inner.SavePage(request);
         }
 
         public virtual ICollection<ContentPageDto> GetAllContentPages(string externalId)
@@ -31,11 +31,6 @@ namespace Wikification.Business.Implementation
         public virtual void RemoveCategory(RemoveCategoryRequestDto request)
         {
             _inner.RemoveCategory(request);
-        }
-
-        public void UpdatePage(UpdateContentPageRequestDto request)
-        {
-            _inner.UpdatePage(request);
         }
     }
 }

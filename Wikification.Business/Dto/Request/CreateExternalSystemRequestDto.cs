@@ -7,7 +7,7 @@ namespace Wikification.Business.Dto.Request
         public string CallbackUrl { get; set; }
         public string ExternalId { get; set; }
         public string Name { get; set; }
-        public ICollection<AddContentPageRequestDto> Pages { get; set; }
+        public ICollection<SaveContentPageRequestDto> Pages { get; set; }
         public ICollection<AddUserRequestDto> Users { get; set; }
     }
 }

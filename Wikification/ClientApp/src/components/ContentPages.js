@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import Parser from 'html-react-parser';
 
 export class ContentPages extends Component {
     
 
     static renderContentPagesTable(contentPages) {
         if (contentPages.length === 0) {
-            return <div>No pages</div>
+            return <div>No pages</div>;
         }
 
         return (
@@ -16,14 +17,24 @@ export class ContentPages extends Component {
                         <th>Version</th>
                     </tr>
                 </thead>
-                <tbody>
                     {contentPages.map(contentPage => (
+                    <tbody>
                         <tr key={contentPage.title}>
                         <td>{contentPage.title}</td>
                         <td>{contentPage.version}</td>
                         </tr>
+                        <tr>
+                            <td colSpan="2">
+                                {contentPage.contents}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">
+                                {Parser(contentPage.parsedContents)}
+                            </td>
+                        </tr>
+                    </tbody>
                     ))}
-                </tbody>
             </table>
         );
     }

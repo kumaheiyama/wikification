@@ -18,9 +18,10 @@ namespace Wikification.Business.Implementation
             _context = context;
         }
 
-        public override void AddPage(AddContentPageRequestDto request)
+        public override void SavePage(SaveContentPageRequestDto request)
         {
             var system = _context.Systems
+                .Include(x => x.Pages)
                 .AsNoTracking()
                 .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
             if (system == null)
@@ -28,7 +29,7 @@ namespace Wikification.Business.Implementation
                 throw new SystemNotFoundException(request.SystemExternalId, $"External Id '{request.SystemExternalId}' is not valid.", "CreateContentPageDto.SystemExternalId");
             }
 
-            base.AddPage(request);
+            base.SavePage(request);
         }
 
         public override ICollection<ContentPageDto> GetAllContentPages(string externalId)

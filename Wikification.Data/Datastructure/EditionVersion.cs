@@ -49,9 +49,9 @@ namespace Wikification.Data.Datastructure
         }
         public enum VersionUpdate
         {
-            Major,
+            Change,
             Minor,
-            Change
+            Major
         }
     }
 

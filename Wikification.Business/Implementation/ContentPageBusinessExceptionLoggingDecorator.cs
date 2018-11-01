@@ -16,11 +16,11 @@ namespace Wikification.Business.Implementation
             _log = log;
         }
 
-        public override void AddPage(AddContentPageRequestDto request)
+        public override void SavePage(SaveContentPageRequestDto request)
         {
             try
             {
-                base.AddPage(request);
+                base.SavePage(request);
             }
             catch (Exception ex)
             {

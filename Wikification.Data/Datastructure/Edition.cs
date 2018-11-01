@@ -15,17 +15,21 @@ namespace Wikification.Data.Datastructure
         }
         public Edition(string contents, int awardedXp, string editionDescription) : this()
         {
-            Contents = contents;
-            AwardedXp = awardedXp;
-            EditionDescription = editionDescription;
+            SetContents(contents);
+            SetAwardedXp(awardedXp);
+            SetEditionDescription(editionDescription);
         }
         public Edition(EditionVersion version) : this()
         {
-            Version = version;
+            var newVersion = new EditionVersion(version.Major, version.Minor, version.Change);
+            Version = newVersion;
         }
 
         //Properties
         public int AwardedXp { get; private set; }
+        /// <summary>
+        /// The edition contents, CommonMark markdown supported
+        /// </summary>
         public string Contents { get; private set; }
         public long DateCreated { get; private set; }
         public string EditionDescription { get; private set; }
@@ -42,6 +46,7 @@ namespace Wikification.Data.Datastructure
         }
         public void SetContents(string contents)
         {
+            if (contents == null) { contents = string.Empty; }
             Contents = contents;
         }
         public int CalculatedAwardedXp()
@@ -50,17 +55,16 @@ namespace Wikification.Data.Datastructure
         }
         public void SetEditionDescription(string desc)
         {
+            if (desc == null) { desc = string.Empty; }
             EditionDescription = desc;
         }
+        /// <summary>
+        /// Get markdown parsed contents
+        /// </summary>
+        /// <returns></returns>
         public string ParsedContents()
         {
-            var builder = ContentParseBuilder
-                .Begin()
-                .SetUnparsedContent(Contents)
-                .ParseList()
-                .ParseLinks()
-                .ParseImageUrls();
-            return builder.Build();
+            return Markdig.Markdown.ToHtml(Contents);
         }
         /// <summary>
         /// Increase version and sets new awarded xp accordingly
