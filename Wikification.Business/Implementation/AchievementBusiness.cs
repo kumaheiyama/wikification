@@ -44,30 +44,42 @@ namespace Wikification.Business.Implementation
             _context.SaveChanges();
         }
 
-        public LevelDto GetAchievedLevel(string externalId, int currentXp)
+        public AchievedLevelResponseDto GetAchievedLevel(string externalId, int currentXp)
         {
             var system = _context.Systems
                 .Include(x => x.Levels)
                 .FirstOrDefault(x => x.ExternalId == externalId);
 
-            var level = system.Levels
+            var currentLevel = system.Levels
                 .Where(x => x.XpThreshold <= currentXp)
                 .OrderBy(x => x.XpThreshold)
                 .LastOrDefault();
-            if (level == null)
+            if (currentLevel == null)
             {
-                level = new Level("Default", 0)
-                {
-                    System = system
-                };
-                system.Levels.Add(level);
+                currentLevel = new Level("Default", 0);
+                system.Levels.Add(currentLevel);
                 _context.SaveChanges();
             }
 
-            return new LevelDto
+            var nextLevel = system.Levels
+                .Where(x => x.XpThreshold > currentXp)
+                .OrderBy(x => x.XpThreshold)
+                .FirstOrDefault();
+
+            return new AchievedLevelResponseDto
             {
-                Name = level.Name,
-                XpThreshold = level.XpThreshold,
+                CurrentLevel = new LevelDto
+                {
+                    Name = currentLevel.Name,
+                    XpThreshold = currentLevel.XpThreshold,
+                },
+                NextLevel = nextLevel != null ?
+                    new LevelDto
+                    {
+                        Name = nextLevel.Name,
+                        XpThreshold = nextLevel.XpThreshold
+                    }
+                    : null
             };
         }
 
@@ -119,10 +131,7 @@ namespace Wikification.Business.Implementation
                 .Where(x => x.Users.Count > 0)
                 .ToList();
 
-            var response = new UserBadgeResponseDto
-            {
-                Badges = new List<UserBadgeDto>()
-            };
+            var response = new UserBadgeResponseDto();
             foreach (var badge in badges)
             {
                 foreach (var userBadge in badge.Users)

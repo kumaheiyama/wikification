@@ -58,7 +58,7 @@ namespace Wikification.Business.Implementation
             base.AddLevel(request);
         }
 
-        public override LevelDto GetAchievedLevel(string externalId, int currentXp)
+        public override AchievedLevelResponseDto GetAchievedLevel(string externalId, int currentXp)
         {
             var system = _context.Systems
                 .AsNoTracking()

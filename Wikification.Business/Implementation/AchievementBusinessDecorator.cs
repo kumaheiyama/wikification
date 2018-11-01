@@ -25,7 +25,7 @@ namespace Wikification.Business.Implementation
             _inner.AddLevel(request);
         }
 
-        public virtual LevelDto GetAchievedLevel(string externalId, int currentXp)
+        public virtual AchievedLevelResponseDto GetAchievedLevel(string externalId, int currentXp)
         {
             return _inner.GetAchievedLevel(externalId, currentXp);
         }

@@ -5,6 +5,11 @@ namespace Wikification.Business.Dto.Response
 {
     public class UserBadgeResponseDto
     {
+        public UserBadgeResponseDto()
+        {
+            Badges = new List<UserBadgeDto>();
+        }
+
         public ICollection<UserBadgeDto> Badges { get; set; }
     }
     public class UserBadgeDto

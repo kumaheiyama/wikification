@@ -43,7 +43,7 @@ namespace Wikification.Business.Implementation
             }
         }
 
-        public override LevelDto GetAchievedLevel(string externalId, int currentXp)
+        public override AchievedLevelResponseDto GetAchievedLevel(string externalId, int currentXp)
         {
             try
             {
