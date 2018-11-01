@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Wikification.Business.Dto.Model;
@@ -12,38 +13,87 @@ namespace Wikification.Business.Implementation
     public class ContentPageBusiness : IContentPageBusiness
     {
         private readonly MainContext _context;
+        private readonly IAchievementBusiness _achievementBusiness;
 
-        public ContentPageBusiness(MainContext context)
+        public ContentPageBusiness(MainContext context, IAchievementBusiness achievementBusiness)
         {
             _context = context;
+            _achievementBusiness = achievementBusiness;
         }
 
-        public void CreateContentPage(CreateContentPageDto request)
+        public void AddPage(AddContentPageRequestDto request)
         {
-            var contentPage = new ContentPage
-            {
-                Title = request.Title
-            };
-            var edition = new Edition
-            {
-                AwardedXp = request.AwardedXp,
-                Contents = request.Contents,
-                EditionDescription = string.Empty
-            };
-            contentPage.AddEdition(edition);
+            var system = _context.Systems
+                .Include(x => x.Pages)
+                .First(x => x.ExternalId == request.ExternalId);
 
-            _context.ContentPages.Add(contentPage);
+            var newPage = new ContentPage(request.Title);
+            var newEdition = new Edition();
+            newEdition.SetAwardedXp(request.AwardedXp);
+            newEdition.SetContents(request.Contents);
+            newEdition.SetEditionDescription(string.Empty);
+            newPage.AddEdition(newEdition);
+            newPage.SetExternalId(request.ExternalId);
+
+            system.Pages.Add(newPage);
+            _context.SaveChanges();
+        }
+        public void UpdatePage(UpdateContentPageRequestDto request)
+        {
+            var system = _context.Systems
+                .Include(x => x.Pages)
+                .ThenInclude(x => x.Editions)
+                .Include(x => x.Categories)
+                .First(x => x.ExternalId == request.SystemExternalId);
+            var contentPage = system.Pages
+                .Where(x => x.System == system)
+                .First(x => x.ExternalId == request.ExternalId);
+
+            var latestEdition = contentPage.LatestEdition();
+
+            var newEdition = new Edition(latestEdition.Version);
+            newEdition.SetContents(request.Contents);
+            newEdition.SetEditionDescription(request.EditionDescription);
+            newEdition.SetAwardedXp(latestEdition.CalculatedAwardedXp());
+
+            var versionUpdate = (Edition.VersionUpdate)request.Version;
+            newEdition.IncreaseVersion(versionUpdate);
+
+            if (request.Categories != null)
+            {
+                foreach (var category in request.Categories)
+                {
+                    if (!contentPage.Categories.Any(x => x.Category.Name == category.Name))
+                    {
+                        var newCategory = new Category(category.Name);
+
+                        if (category.Badge != null) {
+                            var badge = system.Badges
+                                .Where(x => x.SystemId == system.Id)
+                                .FirstOrDefault(x => x.Name == category.Badge.Name);
+                            newCategory.SetBadge(badge);
+                        }
+
+                        contentPage.AddCategory(newCategory);
+                    }
+                }
+            }
+
+            contentPage.AddEdition(newEdition);
             _context.SaveChanges();
         }
 
-        public ICollection<ContentPageDto> GetAllContentPages()
+        public ICollection<ContentPageDto> GetAllContentPages(string externalId)
         {
-            var contentPages = _context.ContentPages
-                .Include(x => x.Badge)
-                .Include(x => x.Editions)
+            var system = _context.Systems
+                .Include(x => x.Badges)
+                .Include(x => x.Pages)
+                .ThenInclude(x => x.Editions)
                 .Include(x => x.Categories)
-                .ThenInclude(cat => cat.Category)
-                .ThenInclude(cat => cat.Badge)
+                .ThenInclude(x => x.Pages)
+                .First(x => x.ExternalId == externalId);
+
+            var contentPages = system.Pages
                 .Select(x => new ContentPageDto
                 {
                     Badge = x.Badge != null
@@ -58,7 +108,6 @@ namespace Wikification.Business.Implementation
                     Categories = x.Categories
                         .Select(y => new CategoryDto
                         {
-                            AwardedXp = y.Category.CalculatedAwardedXp(),
                             Badge = y.Category.Badge != null ?
                                 new BadgeDto
                                 {
@@ -82,41 +131,37 @@ namespace Wikification.Business.Implementation
 
         public void AddCategory(AddCategoryRequestDto request)
         {
-            //Borde istället lägga till ny badge i egen modul och söka upp den?
-            var badge = request.Badge != null
-                ? new Badge
-                {
-                    AwardedXp = request.Badge.AwardedXp,
-                    Description = request.Badge.Description,
-                    Name = request.Badge.Name,
-                    SymbolUrl = request.Badge.SymbolUrl
-                }
-                : null;
-            var category = new Category
-            {
-                AwardedXp = request.AwardedXp,
-                Name = request.Name
-            };
-            category.SetBadge(badge);
+            var system = _context.Systems
+                .Include(x => x.Badges)
+                .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
 
-            _context.Categories.Add(category);
+            _achievementBusiness.AddBadge(request.Badge);
+            var badge = system.Badges
+                .FirstOrDefault(x => x.Name == request.Badge.Name);
+            var category = new Category(request.Name, badge)
+            {
+                System = system
+            };
+
+            system.Categories.Add(category);
             _context.SaveChanges();
         }
+
         public void RemoveCategory(RemoveCategoryRequestDto request)
         {
-            //TODO constraints på tabell
-            //TODO se över logik, måste ta bort från samtliga sidor och sedan från databasen
-            //var contentPage = _context.ContentPages
-            //    .Include(x => x.Categories)
-            //    .SingleOrDefault(x => x.Id == request.ContentPageId);
+            var system = _context.Systems
+                .Include(x => x.Pages)
+                .ThenInclude(x => x.Categories)
+                .First(x => x.ExternalId == request.SystemExternalId);
 
-            //var category = contentPage.Categories
-            //   .FirstOrDefault(x => x.Category.Name == request.CategoryName);
-            //if (category != null)
-            //{
-            //    contentPage.Categories.Remove(category);
-            //}
-            //_context.SaveChanges();
+            var contentPage = system.Pages
+                .First(x => x.ExternalId == request.ContentPageExternalId);
+
+            var category = contentPage.Categories
+                .First(x => x.Category.Name == request.CategoryName);
+
+            contentPage.Categories.Remove(category);
+            _context.SaveChanges();
         }
     }
 }

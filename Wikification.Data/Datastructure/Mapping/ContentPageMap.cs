@@ -10,6 +10,7 @@ namespace Wikification.Data.Datastructure.Mapping
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Title).HasMaxLength(50);
+            builder.Property(x => x.ExternalId).HasMaxLength(100).IsRequired(true);
         }
     }
 }

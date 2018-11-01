@@ -34,7 +34,7 @@ export class ContentPages extends Component {
         super(props);
         this.state = { contentPages: [], loading: true };
 
-        fetch('api/ContentPage/GetContentPages')
+        fetch('api/ContentPage/GetContentPages?externalId=test1')
             .then(response => response.json())
             .then(data => {
                 this.setState({ contentPages: data, loading: false });

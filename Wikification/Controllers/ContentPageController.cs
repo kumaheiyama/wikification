@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Wikification.Business.Dto.Model;
+using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
 
 namespace Wikification.Controllers
@@ -16,9 +17,9 @@ namespace Wikification.Controllers
         }
 
         [HttpGet("[action]")]
-        public ICollection<ContentPageDto> GetContentPages()
+        public ICollection<ContentPageDto> GetContentPages(string externalId)
         {
-            return _pageBusiness.GetAllContentPages();
+            return _pageBusiness.GetAllContentPages(externalId);
         }
 
         [HttpPut("[action]")]
@@ -30,6 +31,10 @@ namespace Wikification.Controllers
             //Notify
         }
 
-
+        [HttpPost("[action]")]
+        public void AddPage(AddContentPageRequestDto request)
+        {
+            _pageBusiness.AddPage(request);
+        }
     }
 }

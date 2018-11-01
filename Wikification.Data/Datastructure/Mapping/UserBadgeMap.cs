@@ -12,11 +12,13 @@ namespace Wikification.Data.Datastructure.Mapping
 
             builder.HasOne(ub => ub.Badge)
                 .WithMany(b => b.Users)
-                .HasForeignKey(ub => ub.UserId);
+                .HasForeignKey(ub => ub.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(ub => ub.User)
                 .WithMany(u => u.EarnedBadges)
-                .HasForeignKey(ub => ub.BadgeId);
+                .HasForeignKey(ub => ub.BadgeId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

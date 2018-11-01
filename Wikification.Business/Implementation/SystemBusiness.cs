@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
 using Wikification.Data;
@@ -17,24 +20,22 @@ namespace Wikification.Business.Implementation
 
         public void AddNewSystem(CreateExternalSystemRequestDto request)
         {
-            if (_context.Systems.Any(x => x.ExternalId == request.ExternalId || x.Name == request.Name)) { return; }
-
-            var newExternalSystem = new ExternalSystem
-            {
-                CallbackUrl = request.CallbackUrl,
-                ExternalId = request.ExternalId,
-                Name = request.Name
-            };
+            var newExternalSystem = new ExternalSystem(request.Name, request.ExternalId, request.CallbackUrl);
 
             //Add users
-            var lowestLevel = _context.Levels
+            var lowestLevel = newExternalSystem.Levels
                 .OrderBy(x => x.XpThreshold)
-                .First();
+                .FirstOrDefault();
+            if (lowestLevel == null)
+            {
+                var newDefaultLevel = new Level("Default level", 0);
+
+                newExternalSystem.Levels.Add(newDefaultLevel);
+            }
+
             foreach (var user in request.Users)
             {
-                var newUser = new User();
-                newUser.SetExternalId(user.ExternalId);
-                newUser.SetUsername(user.Username);
+                var newUser = new User(user.Username, user.ExternalId);
                 newUser.SetLevel(lowestLevel);
                 newExternalSystem.AddUser(newUser);
             }
@@ -42,50 +43,32 @@ namespace Wikification.Business.Implementation
             //Add pages
             foreach (var page in request.Pages)
             {
-                var newPage = new ContentPage
-                {
-                    Title = page.Title,
-                    System = newExternalSystem,
-                };
-                newPage.AddEdition(new Edition
-                {
-                    AwardedXp = page.AwardedXp,
-                    Contents = page.Contents,
-                    EditionDescription = "Initial"
-                });
+                var newPage = new ContentPage(page.Title);
+                var newEdition = new Edition(page.Contents, page.AwardedXp, "Initial");
+                newPage.AddEdition(newEdition);
 
                 //Add categories
-                foreach (var cat in page.Categories)
+                foreach (var category in page.Categories)
                 {
-                    var existingCat = _context.Categories.FirstOrDefault(x => x.Name == cat.Name);
-                    var badge = cat.Badge != null
-                        ? _context.Badges.FirstOrDefault(x => x.Name == cat.Badge.Name)
+                    var existingCategory = newExternalSystem.Categories.FirstOrDefault(x => x.Name == category.Name);
+                    var badge = category.Badge != null
+                        ? newExternalSystem.Badges.FirstOrDefault(x => x.Name == category.Badge.Name)
                         : null;
 
-                    if (existingCat == null)
+                    if (existingCategory == null)
                     {
-                        var newCat = new Category
-                        {
-                            AwardedXp = cat.AwardedXp,
-                            Name = cat.Name
-                        };
+                        var newCategory = new Category(category.Name);
 
-                        if (badge == null && cat.Badge != null)
+                        if (badge == null && category.Badge != null)
                         {
-                            badge = new Badge
-                            {
-                                AwardedXp = cat.Badge.AwardedXp,
-                                Description = cat.Badge.Description,
-                                Name = cat.Badge.Name,
-                                SymbolUrl = cat.Badge.SymbolUrl
-                            };
+                            badge = new Badge(category.Badge.Name, category.Badge.Description, category.Badge.SymbolUrl, category.Badge.AwardedXp);
                         }
-                        newCat.SetBadge(badge);
-                        newPage.AddCategory(newCat);
+                        newCategory.SetBadge(badge);
+                        newPage.AddCategory(newCategory);
                     }
                     else
                     {
-                        newPage.AddCategory(existingCat);
+                        newPage.AddCategory(existingCategory);
                     }
                 }
 
@@ -94,6 +77,68 @@ namespace Wikification.Business.Implementation
 
             _context.Systems.Add(newExternalSystem);
             _context.SaveChanges();
+        }
+
+        public void AddNewUser(AddUserRequestDto request)
+        {
+            var newUser = new User(request.Username, request.ExternalId);
+
+            var system = _context.Systems
+                .Include(x => x.Users)
+                .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
+            var existingUser = system.Users
+                .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
+
+            system.Users.Add(newUser);
+            _context.SaveChanges();
+        }
+
+        public long GetLatestEvent(string externalId)
+        {
+            var lastEvent = _context.Events
+                .AsNoTracking()
+                .OrderBy(x => x.Timestamp)
+                .LastOrDefault(x => x.System.ExternalId == externalId);
+            if (lastEvent == null) { return 0; }
+
+            return lastEvent.Timestamp;
+        }
+
+        public void RemoveUser(RemoveUserRequestDto request)
+        {
+            var system = _context.Systems
+                .FirstOrDefault(x => x.ExternalId == request.SystemExternalId);
+            var existingUser = system.Users
+                .Where(x => x.System == system)
+                .FirstOrDefault(x => x.ExternalId == request.ExternalId || x.Username == request.Username);
+
+            system.Users.Remove(existingUser);
+            _context.SaveChanges();
+        }
+
+        public ICollection<EventDto> GetEvents(string externalId, long startTimestamp, long endTimestamp = 0)
+        {
+            var events = _context.Events
+                .AsNoTracking()
+                .Where(x => x.System.ExternalId == externalId)
+                .Where(x => x.Timestamp >= startTimestamp);
+            if (endTimestamp > 0 && endTimestamp > startTimestamp)
+            {
+                events = events
+                    .Where(x => x.Timestamp <= endTimestamp);
+            }
+
+            var response = events
+                .OrderBy(x => x.Timestamp)
+                .Select(x => new EventDto
+                {
+                    Name = x.Name,
+                    Timestamp = x.Timestamp,
+                    Type = (EventDto.EventDtoType)x.Type
+                })
+                .ToArray();
+
+            return response;
         }
     }
 }

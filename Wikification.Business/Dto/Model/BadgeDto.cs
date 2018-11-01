@@ -6,5 +6,6 @@
         public string SymbolUrl { get; set; }
         public string Description { get; set; }
         public int AwardedXp { get; set; }
+        public int Id { get; set; }
     }
 }

@@ -4,25 +4,33 @@ using Wikification.Data.Interfaces;
 
 namespace Wikification.Data.Datastructure
 {
-    public class Category : IAwardedXp, IEntity
+    public class Category : IEntity
     {
+        public Category() { }
+        public Category(string name, Badge badge = null) : this()
+        {
+            Name = name;
+            SetBadge(badge);
+        }
+
         //Properties
-        public int AwardedXp { get; set; }
         public Badge Badge { get; private set; }
         public int? BadgeId { get; set; }
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; private set; }
+        public ExternalSystem System { get; set; }
+        public int SystemId { get; set; }
         public ICollection<PageCategory> Pages { get; set; }
 
         //Methods
         public void SetBadge(Badge badge)
         {
+            if (badge == null) return;
             Badge = badge;
         }
-        public int CalculatedAwardedXp()
+        public void SetName(string name)
         {
-            var badgeXp = Badge != null ? Badge.CalculatedAwardedXp() : 0;
-            return AwardedXp + badgeXp;
+            Name = name;
         }
     }
 }

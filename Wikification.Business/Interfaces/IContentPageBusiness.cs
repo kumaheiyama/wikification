@@ -6,8 +6,9 @@ namespace Wikification.Business.Interfaces
 {
     public interface IContentPageBusiness
     {
-        ICollection<ContentPageDto> GetAllContentPages();
-        void CreateContentPage(CreateContentPageDto request);
+        ICollection<ContentPageDto> GetAllContentPages(string externalId);
+        void AddPage(AddContentPageRequestDto request);
+        void UpdatePage(UpdateContentPageRequestDto request);
         void AddCategory(AddCategoryRequestDto request);
         void RemoveCategory(RemoveCategoryRequestDto request);
     }
