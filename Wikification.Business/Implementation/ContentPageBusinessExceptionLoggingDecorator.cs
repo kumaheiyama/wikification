@@ -66,5 +66,18 @@ namespace Wikification.Business.Implementation
                 throw;
             }
         }
+
+        public override string ParseContents(string contents)
+        {
+            try
+            {
+                return base.ParseContents(contents);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex.Message, ex);
+                throw;
+            }
+        }
     }
 }

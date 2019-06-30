@@ -160,5 +160,10 @@ namespace Wikification.Business.Implementation
             contentPage.Categories.Remove(category);
             _context.SaveChanges();
         }
+
+        public string ParseContents(string contents)
+        {
+            return Markdig.Markdown.ToHtml(contents);
+        }
     }
 }

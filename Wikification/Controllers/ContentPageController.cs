@@ -32,5 +32,11 @@ namespace Wikification.Controllers
         {
             _pageBusiness.SavePage(request);
         }
+
+        [HttpPost("[action]")]
+        public string ParseContents([FromBody] string contents)
+        {
+            return _pageBusiness.ParseContents(contents);
+        }
     }
 }

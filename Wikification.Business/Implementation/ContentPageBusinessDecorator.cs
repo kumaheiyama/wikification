@@ -32,5 +32,10 @@ namespace Wikification.Business.Implementation
         {
             _inner.RemoveCategory(request);
         }
+
+        public virtual string ParseContents(string contents)
+        {
+            return _inner.ParseContents(contents);
+        }
     }
 }

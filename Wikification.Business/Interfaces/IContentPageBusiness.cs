@@ -10,5 +10,6 @@ namespace Wikification.Business.Interfaces
         void SavePage(SaveContentPageRequestDto request);
         void AddCategory(AddCategoryRequestDto request);
         void RemoveCategory(RemoveCategoryRequestDto request);
+        string ParseContents(string contents);
     }
 }
