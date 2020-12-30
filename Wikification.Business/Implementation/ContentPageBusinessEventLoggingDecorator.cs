@@ -19,9 +19,9 @@ namespace Wikification.Business.Implementation
             _logger = logger;
         }
 
-        public override void AddPage(AddContentPageRequestDto request)
+        public override void SavePage(SaveContentPageRequestDto request)
         {
-            base.AddPage(request);
+            base.SavePage(request);
 
             //Log event
             var system = _context.Systems

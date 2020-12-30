@@ -16,11 +16,11 @@ namespace Wikification.Business.Implementation
             _log = log;
         }
 
-        public override void AddPage(AddContentPageRequestDto request)
+        public override void SavePage(SaveContentPageRequestDto request)
         {
             try
             {
-                base.AddPage(request);
+                base.SavePage(request);
             }
             catch (Exception ex)
             {
@@ -59,6 +59,19 @@ namespace Wikification.Business.Implementation
             try
             {
                 base.RemoveCategory(request);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex.Message, ex);
+                throw;
+            }
+        }
+
+        public override string ParseContents(string contents)
+        {
+            try
+            {
+                return base.ParseContents(contents);
             }
             catch (Exception ex)
             {

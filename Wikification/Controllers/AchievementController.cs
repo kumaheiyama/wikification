@@ -10,19 +10,15 @@ namespace Wikification.Controllers
     public class AchievementController : Controller
     {
         private readonly IAchievementBusiness _achievementBusiness;
-        private readonly ILogifier _log;
 
-        public AchievementController(IAchievementBusiness achievementBusiness, ILogifier log)
+        public AchievementController(IAchievementBusiness achievementBusiness)
         {
             _achievementBusiness = achievementBusiness;
-            _log = log;
         }
 
         [HttpGet("[action]")]
-        public LevelDto GetAchievedLevel(string externalId, int currentXp)
+        public AchievedLevelResponseDto GetAchievedLevel(string externalId, int currentXp)
         {
-            _log.LogError("testmeddelande", new Business.Exceptions.SystemNotFoundException("externalid", "nytt meddelande"));
-
             return _achievementBusiness.GetAchievedLevel(externalId, currentXp);
         }
 

@@ -23,18 +23,20 @@ namespace Wikification.Controllers
         }
 
         [HttpPut("[action]")]
-        public void PageRead(ContentPageDto page, UserDto user)
+        public void ReadPage(string systemExternalId, string pageExternalId, string userExternalId = null)
         {
-            //Award XP, notify
-            //(Award badge, notify)
-            //(Award level, notify)
-            //Notify
         }
 
         [HttpPost("[action]")]
-        public void AddPage(AddContentPageRequestDto request)
+        public void SavePage([FromBody] SaveContentPageRequestDto request)
         {
-            _pageBusiness.AddPage(request);
+            _pageBusiness.SavePage(request);
+        }
+
+        [HttpPost("[action]")]
+        public string ParseContents([FromBody] string contents)
+        {
+            return _pageBusiness.ParseContents(contents);
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Wikification.Business.Dto.Model;
 using Wikification.Business.Dto.Request;
 using Wikification.Business.Interfaces;
-using Wikification.Data.Interfaces;
 
 namespace Wikification.Controllers
 {
@@ -11,19 +10,15 @@ namespace Wikification.Controllers
     public class SystemController : Controller
     {
         private readonly ISystemBusiness _systemBusiness;
-        private readonly ILogifier _log;
 
-        public SystemController(ISystemBusiness systemBusiness, ILogifier log)
+        public SystemController(ISystemBusiness systemBusiness)
         {
             _systemBusiness = systemBusiness;
-            _log = log;
         }
 
         [HttpPost("[action]")]
         public void AddExternalSystem([FromBody] CreateExternalSystemRequestDto request)
         {
-            _log.LogError("testmeddelande2", new System.Exception("testmeddelande 3"));
-
             _systemBusiness.AddNewSystem(request);
         }
 
